@@ -1,93 +1,191 @@
 const puppeteer = require("puppeteer");
 
-async function ebayScrape(product, country) {
+async function aliExpressScraper(product, countries) {
   // launches tor browser
   const browser = await puppeteer.launch({
     // executablePath: 'google-chrome-stable',
     args: [" --no-sandbox"],
-    headless: false,
+    headless: true,
   });
 
+const scrapeInstance = async (product, country) => {
   const page = await browser.newPage();
 
   // navigates to the paste site
-  await page.goto("https://www.aliexpress.com/", { waitUntil: 'domcontentloaded' });
+  await page.goto("https://www.aliexpress.com/", {
+    waitUntil: "domcontentloaded",
+  });
   await page.evaluate(() => window.stop());
 
+  await page.type('input[name="SearchText"]', product);
+  await page.$eval('input[class="search-button"]', element => element.click())
 
- await page.type('input[name="SearchText"]', product);
- await (await page.$('input[class="search-button"]')).click()
+  await page.waitForNavigation();
+  await timeOut(500)
 
- await page.waitForNavigation();
+  try {
+    await page.$eval('a[role="button"][class="next-dialog-close"', element => element.click())
+  } catch {
+    null;
+  }
+  await timeOut(500)
 
-try {
-await (await page.$('a[role="button"][class="next-dialog-close"]')).click()
-} catch {null}
-     
-
-  await (await page.$('a[class="switcher-info notranslate"]')).click()
-  await page.waitForSelector('a[class="address-select-trigger"]', { visible: true })
-  await (await page.$('a[class="address-select-trigger"]')).click()
+  await page.$eval('a[class="switcher-info notranslate"]', element => element.click());
+  await page.waitForSelector('a[class="address-select-trigger"]', {
+    visible: true,
+  });
+  await page.$eval('a[class="address-select-trigger"]', element => element.click());
   await page.type('input[class="filter-input"]', country);
-  await (await page.$(`li[data-name='${country}']`)).click()
-  await (await page.$('button[class="ui-button ui-button-primary go-contiune-btn"]')).click()
+  await page.$eval(`li[data-name='${country}']`, element => element.click());
+  
+  await page.$eval('button[class="ui-button ui-button-primary go-contiune-btn"]', element => element.click())
 
-await page.waitForNavigation();
+  await page.waitForNavigation();
 
-try {
-await (await page.$('a[role="button"][class="next-dialog-close"]')).click()
-} catch {null}
+  try {
+    await page.$eval('a[role="button"][class="next-dialog-close"', element => element.click())
+  } catch {
+    null;
+  }
 
+await page.$eval('span[ae_object_value="number_of_orders"]', element => element.click());
 
-const sortByOrders = await page.$('span[ae_object_value="number_of_orders"]')
-await sortByOrders.click()
+  await timeOut(1000);
 
-await timeOut(1000)
- 
+  await page.$eval('span[class="next-input next-medium next-select-inner"', element => element.click())
+  await page.$eval('li[title="China"', element => element.click())
 
-  await (await page.$('span[class="next-input next-medium next-select-inner"]')).click()
-  await (await page.$('li[title="China"]')).click()
+  await timeOut(1000);
 
-await timeOut(1000)
+  let links = await page.$$('a[class="item-title"]');
 
-        let links = await page.$$('a[class="item-title"]');
+  links = await Promise.all(links.map((link) => link.getProperty("href")));
 
-        links = await Promise.all(
-          links.map((link) => link.getProperty("href"))
-        );
+  links = await Promise.all(links.map((link) => link.jsonValue()));
 
-        links = await Promise.all(links.map((link) => link.jsonValue()));
+const products = []
 
-for (let link of links) {
-try {
-  await page.goto(link, { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => window.stop());
+  for (let link of links.slice(0,20)) {
+    try {
+      await page.goto(link, { waitUntil: "domcontentloaded" });
+      await page.evaluate(() => window.stop());
 
-try {
-await (await page.$('img[class="rax-image"]')).click()
-} catch { null }
+      try {
+        await page.$eval('img[class="rax-image"]', element => element.click())
+      } catch {
+        null;
+      }
 
-await page.$$eval('ul[class="sku-property-list"]', 
-elements => elements.map(async e => await e.querySelector('li:not(.selected)').click()))
+      await page.$$eval('ul[class="sku-property-list"]', (elements) =>
+        elements.map(
+          async (e) => await e.querySelector("li:not(.selected)").click()
+        )
+      );
 
-const url = link
-const title = await page.$eval('h1[class="product-title-text"]', element => element.textContent)
-const price = await page.$eval('span[itemprop="price"]', element => element.textContent)
-const reviews = await page.$eval('span[itemprop="reviewCount"]', element => element.textContent)
-const rating = await page.$eval('span[itemprop="ratingValue"]', element => element.textContent)
-const image = await page.$eval('img[class="magnifier-image"]', element => element.getAttribute('src'))
+      const url = link;
+      const sold = await page.$eval(
+        'span[class="product-reviewer-sold"]',
+        (element) => Number(element.textContent.replace(/[^0-9\.]/g, ""))
+      );
+      const title = await page.$eval(
+        'h1[class="product-title-text"]',
+        (element) => element.textContent
+      );
+      const price = await page.$eval('span[itemprop="price"]', (element) =>
+        Number(element.textContent.replace(/[^0-9\.]/g, ""))
+      );
+      const reviews = (await page.$('span[itemprop="reviewCount'))
+        ? await page.$eval('span[itemprop="reviewCount"]', (element) =>
+          Number(element.textContent.replace(/[^0-9\.]/g, ""))
+        )
+        : 0;
+      const rating = (await page.$('span[itemprop="ratingValue'))
+        ? await page.$eval('span[itemprop="ratingValue"]', (element) =>
+          Number(element.textContent.replace(/[^0-9\.]/g, ""))
+        )
+        : null;
+      const image = await page.$eval(
+        'img[class="magnifier-image"]',
+        (element) => element.getAttribute("src")
+      );
 
-console.log(
-{ title, price, reviews, rating, image, url }
-)
+      await timeOut(500);
 
-} catch { null }
+      await page.$eval(".product-shipping-info", (element) => element.click());
+      await page.waitForSelector('div[class="table-tr active"]', {
+        visible: true,
+      });
+      const shipping = await page.$$eval(
+        'div[class="table-tr"]',
+        (elements) => {
+          function toDays(e) {
+            if (!e.includes("-")) {
+              const months = [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ];
+              let shippingDay = e.split("  ")[1];
+              let shippingMonth = months.indexOf(e.split("  ")[0]) + 1;
+              let shippingYear =
+                shippingMonth > new Date().getMonth()
+                  ? new Date().getFullYear()
+                  : new Date().getFullYear() + 1;
+              return Math.floor(
+                (Date.parse(`${shippingYear}-${shippingMonth}-${shippingDay}`) -
+                  Date.now()) /
+                (1000 * 60 * 60 * 24)
+              );
+            } else {
+              return e.replace(/[^0-9\-]/g, "").split("-");
+            }
+          }
+          return elements.filter(e => e.querySelector('label')).map(e => ({
+            days: toDays(e.querySelectorAll(".table-td")[1].textContent),
+            price:
+              e.querySelectorAll(".table-td")[2].textContent !== "Free Shipping"
+                ? Number(e.querySelectorAll(".table-td")[2].textContent.replace(/[^0-9\.]/g, ""))
+                : 0,
+            carrier: e.querySelectorAll(".table-td")[4].textContent,
+          }));
+        }
+      );
+
+      products.push({
+        title,
+        price,
+        sold,
+        reviews,
+        rating,
+        image,
+        url,
+        shipping,
+      });
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+await page.close();
+return products;
+  }
+  
+const results = await Promise.allSettled(countries.map(async country => {
+     return ({[country]: await scrapeInstance(product, country)})
+  }))
+
+  await browser.close();
+  return results.map(e => e.value);
 }
-
-await browser.close();
-
-}
-
 
 // when this function is called the program awaits the time inserted as an argument before executing the next command
 function timeOut(time) {
@@ -96,11 +194,6 @@ function timeOut(time) {
   });
 }
 
-ebayScrape("Levitating Plant Pot", "United States");
+// aliExpressScraper("Levitating Plant Pot", "United States");
 
-function toPrice(e) {
-  var price = e.replace(/[^0-9\.]/g, "");
-  return price;
-}
-
-module.exports = ebayScrape;
+module.exports = aliExpressScraper;

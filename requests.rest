@@ -1,0 +1,9 @@
+
+
+GET http://localhost:8080/ebay
+Content-Type: application/json
+
+{
+    "countries": ["United States"],
+    "product": "Levitating Plant Pot"
+}
