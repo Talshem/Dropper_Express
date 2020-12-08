@@ -5,7 +5,7 @@ async function aliExpressScraper(product, countries) {
   const browser = await puppeteer.launch({
     // executablePath: 'google-chrome-stable',
     args: [" --no-sandbox"],
-    headless: true,
+    headless: false,
   });
 
 const scrapeInstance = async (product, country) => {
@@ -21,14 +21,11 @@ const scrapeInstance = async (product, country) => {
   await page.$eval('input[class="search-button"]', element => element.click())
 
   await page.waitForNavigation();
-  await timeOut(500)
+  await timeOut(1000)
 
-  try {
-    await page.$eval('a[role="button"][class="next-dialog-close"', element => element.click())
-  } catch {
-    null;
-  }
-  await timeOut(500)
+  if (await page.$('a[role="button"][class="next-dialog-close"]')) await page.$eval('a[role="button"][class="next-dialog-close"]', element => element.click())
+
+  await timeOut(1000)
 
   await page.$eval('a[class="switcher-info notranslate"]', element => element.click());
   await page.waitForSelector('a[class="address-select-trigger"]', {
@@ -41,14 +38,11 @@ const scrapeInstance = async (product, country) => {
   await page.$eval('button[class="ui-button ui-button-primary go-contiune-btn"]', element => element.click())
 
   await page.waitForNavigation();
+  await timeOut(1000);
 
-  try {
-    await page.$eval('a[role="button"][class="next-dialog-close"', element => element.click())
-  } catch {
-    null;
-  }
+  if (await page.$('a[role="button"][class="next-dialog-close"]')) await page.$eval('a[role="button"][class="next-dialog-close"]', element => element.click())
 
-await page.$eval('span[ae_object_value="number_of_orders"]', element => element.click());
+  await page.$eval('span[ae_object_value="number_of_orders"]', element => element.click());
 
   await timeOut(1000);
 
@@ -63,18 +57,16 @@ await page.$eval('span[ae_object_value="number_of_orders"]', element => element.
 
   links = await Promise.all(links.map((link) => link.jsonValue()));
 
-const products = []
+    await page.close()
 
-  for (let link of links.slice(0,20)) {
+    const item = async (link) => {
     try {
+      let page = await browser.newPage();
       await page.goto(link, { waitUntil: "domcontentloaded" });
       await page.evaluate(() => window.stop());
+     await timeOut(500);
 
-      try {
-        await page.$eval('img[class="rax-image"]', element => element.click())
-      } catch {
-        null;
-      }
+      if (await page.$('img[class="rax-image"]')) await page.$eval('img[class="rax-image"]', element => element.click())
 
       await page.$$eval('ul[class="sku-property-list"]', (elements) =>
         elements.map(
@@ -159,8 +151,9 @@ const products = []
           }));
         }
       );
-
-      products.push({
+      
+      await page.close();
+      return ({
         title,
         price,
         sold,
@@ -175,8 +168,17 @@ const products = []
       console.log(err);
     }
   }
-await page.close();
-return products;
+
+links = links.slice(0,20);
+let items = [];
+
+for (let i = 0; i <= links.length && i <= links.length+5; i += 5) {
+  items = items.concat(await Promise.allSettled(links.slice(i,i+5).map(async link => await item(link)
+  )))
+}
+
+return items.map(e => e.value);
+
   }
   
 const results = await Promise.allSettled(countries.map(async country => {

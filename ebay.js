@@ -4,12 +4,12 @@ async function ebayScraper(product, countries) {
 const browser = await puppeteer.launch({
   // executablePath: 'google-chrome-stable',
   args: [" --no-sandbox"],
-  headless: false,
+  headless: true,
 });
 
 const scrapeInstance = async (product, country) => {
   const page = await browser.newPage();
-
+  
   // sets destination country
   await page.goto("https://www.ebay.com/");
   await page.waitForSelector('button[title="Ship to"]', { visible: true });
@@ -29,7 +29,6 @@ const scrapeInstance = async (product, country) => {
   );
 
   await page.waitForNavigation({ waitUntil: "domcontentloaded" });
-  await page.evaluate(() => window.stop());
 
   await page.type('input[class="gh-tb ui-autocomplete-input"]', product);
 
@@ -43,11 +42,12 @@ const scrapeInstance = async (product, country) => {
   links = await Promise.all(links.map((link) => link.getProperty("href")));
 
   links = await Promise.all(links.map((link) => link.jsonValue()));
+  
+  await page.close()
 
-  const products = [];
-
-  for (let link of links.slice(0, 20)) {
+    const item = async (link) => {
     try {
+      let page = await browser.newPage();
       await page.goto(link, { waitUntil: "domcontentloaded" });
       await page.evaluate(() => window.stop());
 
@@ -78,18 +78,26 @@ const scrapeInstance = async (product, country) => {
         element.getAttribute("src")
       );
 
-      products.push({ title, price, shipping, sold, image, url });
+      await page.close();
+      return ({ title, price, shipping, sold, image, url });
     } catch (err) {
       console.log(err);
     }
   }
-await page.close();
-return products;
+links = links.slice(0,20);
+let items = [];
+
+for (let i = 0; i <= links.length && i <= links.length+5; i += 5) {
+  items = items.concat(await Promise.allSettled(links.slice(i,i+5).map(async link => await item(link)
+  )))
 }
 
-const results = await Promise.allSettled(countries.map(async country => {
-     return ({[country]: await scrapeInstance(product, country)})
-  }))
+return items.map(e => e.value);
+  }
+
+const results = await Promise.allSettled(countries.map(async country =>
+     ({[country]: await scrapeInstance(product, country)})
+  ))
 
   await browser.close();
   return results.map(e => e.value);
