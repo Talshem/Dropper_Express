@@ -1,6 +1,6 @@
 
 
-GET http://localhost:8080/ebay
+GET http://localhost:8000/aliexpress
 Content-Type: application/json
 
 {

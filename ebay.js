@@ -9,7 +9,9 @@ const browser = await puppeteer.launch({
 
 const scrapeInstance = async (product, country) => {
   const page = await browser.newPage();
-  
+  await page.setViewport({width:0, height:0});
+
+  console.log('Sets Destination Country')
   // sets destination country
   await page.goto("https://www.ebay.com/");
   await page.waitForSelector('button[title="Ship to"]', { visible: true });
@@ -30,7 +32,9 @@ const scrapeInstance = async (product, country) => {
 
   await page.waitForNavigation({ waitUntil: "domcontentloaded" });
 
+
   await page.type('input[class="gh-tb ui-autocomplete-input"]', product);
+
 
   const button = await page.$("#gh-btn");
 
@@ -55,6 +59,8 @@ const scrapeInstance = async (product, country) => {
       const title = await page.$eval('h1[itemprop="name"]', (element) =>
         element.textContent.split("Details about")[1].trim()
       );
+
+      // add shipping delivery
       let shipping = (await page.$('span[id="fshippingCost"] > span'))
         ? await page.$eval('span[id="fshippingCost"] > span', (element) =>
             element.textContent.replaceAll(/[\t\n]+/g, "").trim()

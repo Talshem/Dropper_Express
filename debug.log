@@ -1,0 +1,35 @@
+[1209/123151.643:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123151.651:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-QEA51p\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123151.651:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-QEA51p\Crashpad\reports\d63fc60e-1c93-458e-9fff-2cd13f7ddaae.dmp: The system cannot find the path specified. (0x3)
+[1209/123151.651:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123202.540:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123202.542:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123202.546:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-jhvpmf\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123202.546:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-jhvpmf\Crashpad\reports\a89ccd7e-4788-44ae-8105-0a3604b2fec4.dmp: The system cannot find the path specified. (0x3)
+[1209/123202.546:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123202.548:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-jhvpmf\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123202.549:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-jhvpmf\Crashpad\reports\40febdf0-95e7-4e6b-ac02-a34fad02cf73.dmp: The system cannot find the path specified. (0x3)
+[1209/123202.549:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123205.675:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123205.680:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-2qvYWH\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123205.681:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-2qvYWH\Crashpad\reports\c8305e09-8d92-4261-a6fd-ba5c19d757b6.dmp: The system cannot find the path specified. (0x3)
+[1209/123205.681:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123205.681:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123205.684:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-2qvYWH\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123205.685:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-2qvYWH\Crashpad\reports\728a1b2a-1a32-4472-b4ff-b0ed543f3c0a.dmp: The system cannot find the path specified. (0x3)
+[1209/123205.685:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123232.502:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123232.506:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-ISDnfo\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123232.506:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-ISDnfo\Crashpad\reports\6ec4b768-9faf-4d28-8b1c-87b379813464.dmp: The system cannot find the path specified. (0x3)
+[1209/123232.506:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123313.703:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123313.713:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-idiYbY\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123313.714:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-idiYbY\Crashpad\reports\5ebb366b-68ea-4230-ae4c-590c6664227d.dmp: The system cannot find the path specified. (0x3)
+[1209/123313.715:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/123313.729:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1209/123313.737:ERROR:file_io_win.cc(162)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-idiYbY\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1209/123313.737:ERROR:file_io_win.cc(171)] CreateFile C:\Users\User\AppData\Local\Temp\puppeteer_dev_chrome_profile-idiYbY\Crashpad\reports\4c1212d4-4d95-4b47-b975-7b95a42e59d6.dmp: The system cannot find the path specified. (0x3)
+[1209/123313.737:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1209/220433.239:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1209/220433.242:ERROR:prune_crash_reports.cc(36)] PruneCrashReportDatabase: Failed to get pending reports
+[1209/222800.100:ERROR:exception_handler_server.cc(524)] ConnectNamedPipe: The pipe is being closed. (0xE8)
