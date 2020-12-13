@@ -1,0 +1,48 @@
+@font-face { 
+    font-family: "Avenir Light";
+    src: url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.eot");
+    src: url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.eot?#iefix")
+    format("embedded-opentype"),url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.woff2")
+    format("woff2"), url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.woff")
+    format("woff"), url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.ttf")
+    format("truetype"), url("//db.onlinewebfonts.com/t/116af611cbcd9e4bada60b4e700430c1.svg#Avenir Light")
+    format("svg");
+    }
+
+.container{
+display: flex;
+width: 100vw;
+height: 100vh;
+
+}
+
+.logo {
+ display: inline-block;
+flex:6;
+background-image: url("texture.png");
+background-repeat: repeat;
+background-size: 350px;
+z-index: 1;
+}
+
+.login {
+white-space: nowrap;
+overflow: hidden;
+flex: 3;
+z-index: 2;
+box-shadow: 3px 0px 5px rgb(172, 134, 85);
+background-color: rgb(255, 251, 215);
+display: inline-block;
+
+}
+
+.logoTitle{
+    color: rgb(252, 247, 228);
+    text-shadow: 2px 2px 0px rgb(202, 159, 102);
+padding-left: 50px;
+z-index: 3;
+font-size: 150px;
+white-space: nowrap;
+font-family: "Avenir Light";
+overflow: hidden;
+}

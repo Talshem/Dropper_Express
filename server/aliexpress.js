@@ -5,9 +5,12 @@ const puppeteer = require("puppeteer");
 async function aliExpressScraper(product, countries) {
   // launches tor browser
   const browser = await puppeteer.launch({
+    // Laptop
+    // executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    // PC
     // executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-    args: [" --no-sandbox", '--window-size=1920,1080',],
-    headless: false,
+    args: [" --no-sandbox", '--window-size=1920,1080'],
+    headless: true
   });
 
 const scrapeInstance = async (product, country) => {
@@ -180,8 +183,9 @@ const results = await Promise.allSettled(countries.map(async country => {
      return ({[country]: await scrapeInstance(product, country)})
   }))
 
+  console.log('Done!')
   await browser.close();
-  return results.map(e => e.value);
+  return results.filter(e => e.value).map(e => e.value);
 }
 
 // when this function is called the program awaits the time inserted as an argument before executing the next command
