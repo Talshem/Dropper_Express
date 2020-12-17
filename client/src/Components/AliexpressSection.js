@@ -1,9 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { AliexpressItem } from './'
 import _ from 'lodash';
+import { Button, Slider, Typography, InputLabel, MenuItem, FormControl, Select, Menu } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { ItemContext } from "../Providers/ItemProvider";
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: 100,
+        display: 'inline-block',
+        margin: 10
+    },
+    formControl: {
+        minWidth: 120,
+    },
+}))
+
+
 
 export default function AliexpressSection({ aliexpress, country }) {
-    const [sort, setSort] = useState('sold')
+    const [sort, setSort] = useState(null)
     const [page, setPage] = useState(0)
 
     const [rating, setRating] = useState(0)
@@ -13,9 +30,14 @@ export default function AliexpressSection({ aliexpress, country }) {
     const [sold, setSold] = useState(0)
 
     const [data, setData] = useState(null)
+    const classes = useStyles();
+    const { handleSelect } = useContext(ItemContext);
 
     useEffect(() => {
-        country && setData(aliexpress.find(e => Object.keys(e)[0] === country)[country])
+        if (country) {
+            let data = aliexpress.find(e => Object.keys(e)[0] === country)[country]
+            setData(data)
+        }
     }, [country])
 
 
@@ -52,7 +74,7 @@ export default function AliexpressSection({ aliexpress, country }) {
             case 'delivery':
                 return e.sort((a, b) => { return averageDelivery(a['shipping'][0]['days']) - averageDelivery(b['shipping'][0]['days']) })
             default:
-                return
+                return e
         }
     }
 
@@ -61,38 +83,81 @@ export default function AliexpressSection({ aliexpress, country }) {
         <div className='aliexpress'>
             {data &&
                 <>
-                    <h3>Aliexpress</h3>
-            Sort By: <select onChange={(e) => setSort(e.target.value)}>
-                        <option value="sold">Sold</option>
-                        <option value="price">Price</option>
-                        <option value="delivery">Delivery</option>
-                        <option value="rating">Rating</option>
-                        <option value="reviews">Reviews</option>
-                    </select>
-            Delivery: <input onChange={_.debounce((e) => { setDelivery(e.target.value); setPage(0) }, 250)} defaultValue="5000" type="range" min="0" max={Math.max(...data.map(e => e['shipping'][0]['days']))} />
-            Sold:<input onChange={_.debounce((e) => { setSold(e.target.value); setPage(0) }, 250)} defaultValue="0" type="range" min="0" max={Math.max(...data.map(e => e.sold))} />
-            Price: <input onChange={_.debounce((e) => { setPrice(e.target.value); setPage(0) }, 250)} defaultValue="5000" type="range" min="0" max={Math.max(...data.map(e => e['price'] + e['shipping'][0]['price']))} />
-            Rating: <input onChange={_.debounce((e) => { setRating(e.target.value); setPage(0) }, 250)} defaultValue="0" type="range" min="0" max="5" step="0.1" />
-            Reviews: <input onChange={_.debounce((e) => { setReviews(e.target.value); setPage(0) }, 250)} defaultValue="0" type="range" min="0" max={Math.max(...data.map(e => e.reviews))} />
+                    <h3>Aliexpress - <span style={{fontWeight:'400'}}>Choose the item you want to dropship</span></h3>
 
-                    <br /><br />
-                    {sortItems(data)
-                        .slice(page, page + 3)
-                        .map((e, index) =>
-                            <AliexpressItem
-                                key={e.url}
-                                image={e.image}
-                                title={e.title}
-                                url={e.url}
-                                sold={e.sold}
-                                shipping={e.shipping}
-                                price={e.price}
-                                reviews={e.reviews}
-                                rating={e.rating}
-                            />
-                        )}
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-outlined-label">Sort By</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value)}
+                            label="Sort By"
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="sold">Sold</MenuItem>
+                            <MenuItem value="price">Price</MenuItem>
+                            <MenuItem value="delivery">Delivery</MenuItem>
+                            <MenuItem value="rating">Rating</MenuItem>
+                            <MenuItem value="reviews">Reviews</MenuItem>
+                        </Select>
+                    </FormControl>
                     <br />
-                    <button onClick={() => page > 2 ? setPage(e => e - 3) : setPage(0)}>Previous</button> <button onClick={() => page + 3 < sortItems(data).length - 2 && setPage(e => e + 3)}>Next</button>
+                    <div className={classes.root}>
+                        <Typography id="range-slider" gutterBottom>
+                            Delivery
+                        </Typography>
+                        <Slider valueLabelDisplay="auto" onChange={_.debounce((e, newValue) => { setDelivery(newValue); setPage(0) }, 250)} defaultValue={5000} min={0} max={Math.max(...data.map(e => e['shipping'][0]['days']))} />
+                    </div>
+                    <div className={classes.root}>
+                        <Typography id="range-slider" gutterBottom>
+                            Sold
+                        </Typography>
+                        <Slider valueLabelDisplay="auto" onChange={_.debounce((e, newValue) => { setSold(newValue); setPage(0) }, 250)} defaultValue={0} min={0} max={Math.max(...data.map(e => e.sold))} />
+                    </div>
+                    <div className={classes.root}>
+                        <Typography id="range-slider" gutterBottom>
+                            Price
+                        </Typography>
+                        <Slider valueLabelDisplay="auto" onChange={_.debounce((e, newValue) => { setPrice(newValue); setPage(0) }, 250)} defaultValue={5000} min={0} max={Math.max(...data.map(e => e['price'] + e['shipping'][0]['price']))} />
+                    </div>
+                    <div className={classes.root}>
+                        <Typography id="range-slider" gutterBottom>
+                            Rating
+                        </Typography>
+                        <Slider valueLabelDisplay="auto" onChange={_.debounce((e, newValue) => { setRating(newValue); setPage(0) }, 250)} defaultValue={0} step={0.1} min={0} max={Math.max(...data.map(e => e['rating']))} />
+                    </div>
+                    <div className={classes.root}>
+                        <Typography id="range-slider" gutterBottom>
+                            Reviews
+                        </Typography>
+                        <Slider valueLabelDisplay="auto" onChange={_.debounce((e, newValue) => { setReviews(newValue); setPage(0) }, 250)} defaultValue={0} min={0} max={Math.max(...data.map(e => e['reviews']))} />
+                    </div>
+                    <br /><br />
+                    <div className='itemContainer'>
+
+                        {sortItems(data)
+                            .slice(page, page + 4)
+                            .map((e, index) =>
+                                <AliexpressItem
+                                    index={index}
+                                    key={e.url}
+                                    image={e.image}
+                                    title={e.title}
+                                    url={e.url}
+                                    sold={e.sold}
+                                    shipping={e.shipping}
+                                    price={e.price}
+                                    reviews={e.reviews}
+                                    rating={e.rating}
+                                />
+                            )}
+                    </div>
+                    <br />
+                    <Button onClick={() => page > 3 ? setPage(e => e - 4) : setPage(0)}>Previous</Button>
+                    <Button onClick={() => page + 4 < sortItems(data).length - 3 && setPage(e => e + 4)}>Next</Button>
                 </>
             }
         </div>

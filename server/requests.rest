@@ -1,9 +1,8 @@
 
-
 GET http://localhost:8000/aliexpress
 Content-Type: application/json
 
 {
-    "countries": ["Israel"],
+    "countries": ["United States"],
     "product": "Levitating Plant Pot"
 }

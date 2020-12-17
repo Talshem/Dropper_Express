@@ -22,7 +22,8 @@ const scrapeInstance = async (product, country) => {
     waitUntil: "domcontentloaded",
   });
   await page.evaluate(() => window.stop());
-
+  
+  console.log('Types the name of the product')
   await page.type('input[name="SearchText"]', product);
   await page.$eval('input[class="search-button"]', element => element.click())
 
@@ -32,6 +33,7 @@ const scrapeInstance = async (product, country) => {
 
   await timeOut(500)
 
+  console.log('Sets Destination Country')
   await page.$eval('a[class="switcher-info notranslate"]', element => element.click());
   await page.waitForSelector('a[class="address-select-trigger"]', {
     visible: true,
@@ -45,7 +47,7 @@ const scrapeInstance = async (product, country) => {
   await page.$eval('span[ae_object_value="number_of_orders"]', element => element.click());
 
   await page.waitForNavigation();
-
+console.log('Sets configurations')
   await page.$eval('span[class="next-input next-medium next-select-inner"', element => element.click())
   await page.$eval('li[title="China"', element => element.click())
 
@@ -169,6 +171,7 @@ const scrapeInstance = async (product, country) => {
 
 links = links.slice(0,20);
 let items = [];
+console.log('Opens Links')
 
 for (let i = 0; i <= links.length && i <= links.length+5; i += 5) {
   items = items.concat(await Promise.allSettled(links.slice(i,i+5).map(async link => await item(link)

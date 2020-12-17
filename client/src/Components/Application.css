@@ -5,33 +5,34 @@ width: 100vw;
 height: 100px;
 background: rgb(255, 166, 0);
 box-shadow: 0px 0px 5px rgb(112, 108, 108);
-z-index: 2;
+z-index: 5;
 }
 
 .tabsBar{
-position: fixed;
+position: relative;
 width: 100vw;
 top: 100px;
-z-index: 1;
+z-index: 2;
 background: rgb(255, 230, 185);
 height: 50px;
 
 }
 
 .searchTab{
-z-index: 1;
+z-index: 2;
 border:none;
 margin-left:20px;
 padding:12px;
 width:150px;
-margin-top: 11px;
+margin-top: 12px;
 background:#f1f1f1;
 border-top-left-radius: 5px;
 border-top-right-radius: 5px;
 }
 
 
- button:focus, button {
+summary, button:focus, button {
+    cursor: pointer;
     outline: none;
     border: none;
 }
@@ -68,26 +69,7 @@ font-size: 26px;
 position: absolute;
 }
 
-.ebayItem{
-font-size: 12px;
-border: 1px solid black;
-display: inline-block;
-height: 250px;
-width: 300px;
+.searchButton:active{
+    background:  rgb(224, 146, 0);
+ 
 }
-
-.aliexpressItem{
-    font-size: 12px;
-    border: 1px solid black;
-    display: inline-block;
-    height: 300px;
-    width: 350px;
-    }
-
-    .shippingTable, .shippingTable td, .shippingTable th {
-        border: 1px solid black;
-      }
-      
-      .shippingTable {
-        border-collapse: collapse;
-      }

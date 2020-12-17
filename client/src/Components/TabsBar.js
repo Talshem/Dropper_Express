@@ -13,7 +13,7 @@ export default function Tabsbar(props) {
                 <button style={{background: tab === 4 ? 'white' : '#f1f1f1'}} onClick={() => setTab(4)} className='searchTab'>Title 4</button>
                 <button style={{background: tab === 5 ? 'white' : '#f1f1f1'}} onClick={() => setTab(5)} className='searchTab'>Title 5</button>
             </div>
-            <div style={{position:'relative', top:'150px', background:'white'}}>
+            <div style={{position:'relative', top:'100px', background:'white'}}>
             <CompareTab key={1} display={tab === 1 ? 'block' : 'none'} />
             <CompareTab key={2} display={tab === 2 ? 'block' : 'none'} />
             <CompareTab key={3} display={tab === 3 ? 'block' : 'none'} />

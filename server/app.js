@@ -15,9 +15,10 @@ const data = { aliexpressMock, ebayMock }
 
 app.get('/ebay', async (req, res) => {
 console.log('Scraping Ebay...')
-const { product, countries } = req.body;
+const { product } = req.query;
 try {
-const results = await ebayScraper(product, countries)
+const results = await ebayScraper(product, ['United States'])
+console.log(results)
 return res.send(results)
 } catch(err) {
 console.log('failure', err)
@@ -27,9 +28,9 @@ return res.send(err)
 
 app.get('/aliexpress', async (req, res) => {
 console.log('Scraping AliExpress...')
-const { product, countries } = req.body;
+const { product } = req.query;
 try {
-const results = await aliExpressScraper(product, countries)
+const results = await aliExpressScraper(product, ['United States'])
 return res.send(results)
 } catch(err) {
 console.log('failure', err)
@@ -39,12 +40,10 @@ return res.send(err)
 
 
 app.get('/ebayMock', async (req, res) => {
-    console.log(111)
     return res.send(data.ebayMock)
     });
     
     app.get('/aliexpressMock', async (req, res) => {
-        console.log(222)
     return res.send(data.aliexpressMock)
     });
     

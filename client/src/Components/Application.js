@@ -5,8 +5,8 @@ export default function Application(props) {
 
     return (
         <>
-          <Header/>   
-          <TabsBar/> 
+          <Header/>  
+          <TabsBar/>
         </>
     )
 }
