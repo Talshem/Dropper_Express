@@ -1,19 +1,54 @@
+
 .header{
 position: fixed;
+display: inline;
 top:0;
 width: 100vw;
-height: 100px;
-background: rgb(255, 166, 0);
-box-shadow: 0px 0px 5px rgb(112, 108, 108);
+height: 90px;
+background-color: white;
 z-index: 5;
 }
 
+
+
+.footer{
+    margin-top: 100px;
+width: 100%;
+height:400px;
+background-color: rgb(245, 244, 239);
+
+}
+
+.pageTitle{
+top:90px;
+position: fixed;
+z-index: 5;
+margin-top: 0;
+width: 100%;
+height:36px;
+text-align: center;
+background: rgb(165, 133, 133);
+color:rgb(255, 255, 255);
+border-bottom: 3.5px solid white;
+font-weight: 100;
+font-size: 24px;
+}
+
+hr{
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    background: #999;
+}
+
+
 .tabsBar{
-position: relative;
+position: sticky;
+top:129px;
 width: 100vw;
-top: 100px;
-z-index: 2;
-background: rgb(255, 230, 185);
+margin-top:3px;
+z-index: 5;
+background: rgb(223, 206, 206);
 height: 50px;
 
 }
@@ -22,10 +57,12 @@ height: 50px;
 z-index: 2;
 border:none;
 margin-left:20px;
-padding:12px;
+padding:10px;
 width:150px;
-margin-top: 12px;
+margin-top: 11px;
+border: 3px solid white;
 background:#f1f1f1;
+box-shadow: 2px -1px 2px rgb(190, 159, 159);
 border-top-left-radius: 5px;
 border-top-right-radius: 5px;
 }
@@ -34,7 +71,6 @@ border-top-right-radius: 5px;
 summary, button:focus, button {
     cursor: pointer;
     outline: none;
-    border: none;
 }
 
 button:active {
@@ -55,21 +91,56 @@ button:active {
 }
 
 .searchButton{
+    margin-left: -50px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     text-decoration: none;
-background:  rgb(255, 166, 0);
-color: wheat;
+background:  rgb(243,224,209);
+color: rgb(255, 255, 255);
 margin-top: 25px;
 border: 1.5px solid rgb(218, 218, 218);
 border-left: none;
 cursor: pointer;
-height:45.5px;
+height:45px;
+width: 100px;
 font-size: 26px;
 position: absolute;
 }
 
 .searchButton:active{
-    background:  rgb(224, 146, 0);
+    background:  rgb(223, 202, 186);
  
+}
+
+.refButton{
+opacity: 0.7;
+z-index: 2;
+position: absolute;;
+left:40%;
+width: 18%;
+padding: 1%;
+margin-top:8%;
+font-size: 60px;
+text-align: center;
+background:transparent;
+color:white;
+box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.5);
+text-shadow: 1.5px 1.5px 1px rgb(0, 0, 0, 0.5);
+border: 5px solid white;
+}
+
+.loadingText{
+font-weight: 100;
+font-size: 80px;
+position: relative;
+margin-bottom: 50;
+animation-duration: 2s;
+animation-name: fading;
+animation-iteration-count: infinite;
+}
+
+@keyframes fading {
+  0%   {opacity: 0.25;}
+  50%  {opacity: 0.75;}
+  100% {opacity: 0.25;}
 }

@@ -1,12 +1,14 @@
 import React from 'react'
-import { Header, TabsBar } from './'
+import { Header, TabsBar, Footer } from './'
+import './Application.css'
 
 export default function Application(props) {
 
     return (
         <>
-          <Header/>  
+          <Header/> 
           <TabsBar/>
+          <Footer/>
         </>
     )
 }

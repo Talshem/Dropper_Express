@@ -1,8 +1,14 @@
 
-GET http://localhost:8000/aliexpress
+GET http://localhost:8080/aliexpress?product=yoga mat
+Content-Type: application/json
+###
+
+GET http://localhost:8080/ebay?product=Levitating Plant Pot
 Content-Type: application/json
 
-{
-    "countries": ["United States"],
-    "product": "Levitating Plant Pot"
-}
+###
+
+GET http://localhost:8080/ebayMock
+Content-Type: application/json
+
+

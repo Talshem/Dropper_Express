@@ -3,19 +3,36 @@
     width:100%
 }
 
+
+hr {
+    border: 0;
+    width: 1px;
+    background: #333;
+    background-image: linear-gradient(to bottom, rgb(240, 240, 240), rgb(177, 177, 177), rgb(240, 240, 240));
+}
+
+
+.profitSection{
+    background-color: rgb(245, 244, 239);
+    padding: 20px;
+    width: 75%;
+}
+
 .productContainer{
     overflow-y: auto;
     color: rgb(255, 252, 246);
-    border-radius: 10px;
-margin: 5px;
-font-size: 12px;
+margin: 15px;
+font-size: 14px;
 border: 2px solid rgb(241, 241, 241);
 display: inline-block;
 box-shadow: 3px 3px 5px rgb(216, 216, 216);
-height: 265px;
-width: 45%;
-color:black
+height: 340px;
+width: 40%;
+color:black;
+padding:5px;
 }
+
+
 
 .productContainer img {
 border-radius: 5px;
@@ -23,19 +40,20 @@ border: 2px solid rgb(218, 218, 218)
 }
 
 .productContainer button {
-background: white;
+background: rgb(255, 255, 255, 0.5);
 width: 80%;
+height:30px;
 border-radius: 5px;
-border: 2px solid #e9e9e9;
+border: 2px solid rgba(196, 196, 196, 0.25);
 }
 
 .productContainer button:hover {
-border: 2px solid #e9e9e9;
+border: 2px solid  rgba(196, 196, 196, 0.5);
 }
 
 .productContainer button:active {
-border: 2px solid #dddddd;
-background: #dddddd;
+border: rgba(196, 196, 196, 0.5);
+background: rgba(196, 196, 196, 0.5);
 }
     
 

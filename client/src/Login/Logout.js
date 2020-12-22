@@ -1,7 +1,8 @@
 import { GoogleLogout } from 'react-google-login';
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
-  
+  import { Button } from '@material-ui/core';
+
 export default function GoogleButton() {
   const { userLogout, user } = useContext(UserContext);
 
@@ -11,9 +12,12 @@ return (
   <GoogleLogout className="signGoogle"
 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 buttonText="Logout"
+render={renderProps => (
+      <Button onClick={renderProps.onClick} disabled={renderProps.disabled}>Logout</Button>
+    )}
 onLogoutSuccess={() => userLogout()}
 />
 :
-<button onClick={() => userLogout()}> Logout </button>}
+<Button onClick={() => userLogout()}> Logout </Button>}
 </>
 )}

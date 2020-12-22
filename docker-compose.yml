@@ -1,0 +1,32 @@
+version: "2.2"
+
+services:
+  client:
+    restart: on-failure
+    build:
+      context: "./client"
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    depends_on:
+      - server
+    # volumes:
+    #   - .:/usr/src/app/client
+    #   - /usr/src/app/client/node_modules
+
+  server:
+    restart: on-failure
+    build:
+      context: "./server"
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    # volumes:
+    #   - .:/usr/src/app/server
+    #   - /usr/src/app/server/node_modules
+  
+
+  torproxy:
+    image: dperson/torproxy
+

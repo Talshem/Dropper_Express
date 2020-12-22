@@ -1,10 +1,11 @@
 .sign{
-margin: 10%;
-padding: 10px;
+  overflow: hidden;
+margin: 5%;
+padding: 50px;
 background: white;
-height: 85%;
-box-shadow: 0px 0px 5px rgb(233, 222, 197);
-border-radius: 10px;
+height: 80%;
+box-shadow: 0px 0px 5px rgb(141, 110, 110, 0.3);
+border-radius: 5px;
 }
 
 
@@ -18,7 +19,7 @@ border-radius: 10px;
     }
     
     .sign input{
-      width:100%;
+      width:60%;
       height: 30px;
       border-radius: 5px;
       color:rgb(170, 170, 170);
