@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { CompareTab } from "./";
 import ErrorBoundary from "../Helpers/ErrorBoundary";
+import { RecentSearches } from "./";
 
-function SearchBar({ display, setTitle, index, cacheData }) {
+function SearchBar({ display, setTitle, index, cacheData, recent }) {
   const [input, setInput] = useState("");
   const [search, setSearch] = useState(null);
   const [toggle, setToggle] = useState(0);
 
   useEffect(() => {
     if (cacheData && cacheData.product) {
-    setTitle(cacheData.product)
-    setSearch(cacheData.product)
+      setTitle(cacheData.product);
+      setSearch(cacheData.product);
     }
   }, [cacheData]);
-
 
   return (
     <center
@@ -33,7 +33,7 @@ function SearchBar({ display, setTitle, index, cacheData }) {
       />
       <button
         onClick={() => {
-          if (input !== "") {
+          if (input.trim() !== "") {
             setTitle(input);
             setSearch(input);
             setToggle((e) => e + 1);
@@ -52,6 +52,16 @@ function SearchBar({ display, setTitle, index, cacheData }) {
           setSearch={(e) => setSearch(e)}
         />
       </ErrorBoundary>
+      {recent && !toggle && !cacheData && (
+        <RecentSearches
+          recent={recent}
+          setSearch={(data) => {
+            setTitle(data);
+            setSearch(data);
+            setToggle((e) => e + 1);
+          }}
+        />
+      )}
     </center>
   );
 }

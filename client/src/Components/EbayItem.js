@@ -45,18 +45,18 @@ export default function EbayItem({
         <br />
       </a>
       <span>
-        sold: <b>{sold}</b> | price: <b>{price}$</b>
+        Sold: <b>{sold}</b> | Price: <b>{price}$</b>
       </span>
       <br />
       <span>
-        shipping: <b>{shipping.price ? `${shipping.price}$` : "Free"}</b>,
-        delivery: <b>{shipping.days[0]}</b> to <b>{shipping.days[1]}</b>{" "}
+        Shipping: <b>{shipping.price ? `${shipping.price}$` : "Free"}</b> | 
+        Delivery: <b>{shipping.days[0]}</b> to <b>{shipping.days[1]}</b>{" "}
         days
       </span>
       <br />
       <br />
       <span style={{ fontSize: "20px" }}>
-        <b> total: {(price + shipping.price).toFixed(2)}$</b>
+        <b> Total: {(price + shipping.price).toFixed(2)}$</b>
       </span>
       <br />
       <button

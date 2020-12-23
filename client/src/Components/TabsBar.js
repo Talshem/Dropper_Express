@@ -3,23 +3,27 @@ import { SearchBar } from "./";
 import "./Application.css";
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
-import axios from "axios";
+import network from "../Helpers/Network";
 
 export default function Tabsbar(props) {
   const [tab, setTab] = useState(1);
-  const [name1, setName1] = useState("New Tab");
-  const [name2, setName2] = useState("New Tab");
-  const [name3, setName3] = useState("New Tab");
-  const [name4, setName4] = useState("New Tab");
-  const [name5, setName5] = useState("New Tab");
+  const [name, setName] = useState({ 1: '', 2: '', 3:'', 4:'', 5:'' });
+
+        const handleChange = (e, index) => {
+            setName(prevState => ({
+                ...prevState,
+                [index]: e
+            }));
+        };
+        
   const [cacheData, setCacheData] = useState({});
   const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/history/${user.email}`);
-        setCacheData(data);
+        const { data } = await network.get(`/history/${user.email}`);
+        if (data) setCacheData(data);
       } catch (err) {
         return;
       }
@@ -27,98 +31,39 @@ export default function Tabsbar(props) {
     fetchData();
   }, []);
 
+const array = [1, 2, 3, 4, 5]
+
   return (
     <>
       <div id="searchBar" style={{ top: "810px", position: "absolute" }} />
       <div className="tabsBar">
+        {array.map(e => 
         <button
           style={{
-            background: tab === 1 ? "white" : "#f1f1f1",
+            background: tab === e ? "white" : "#f1f1f1",
             overflow: "hidden",
           }}
-          onClick={() => setTab(1)}
+          onClick={() => setTab(e)}
           className="searchTab"
         >
-          {name1}
+          {name[e]}
         </button>
-        <button
-          style={{
-            background: tab === 2 ? "white" : "#f1f1f1",
-            overflow: "hidden",
-          }}
-          onClick={() => setTab(2)}
-          className="searchTab"
-        >
-          {name2}
-        </button>
-        <button
-          style={{
-            background: tab === 3 ? "white" : "#f1f1f1",
-            overflow: "hidden",
-          }}
-          onClick={() => setTab(3)}
-          className="searchTab"
-        >
-          {name3}
-        </button>
-        <button
-          style={{
-            background: tab === 4 ? "white" : "#f1f1f1",
-            overflow: "hidden",
-          }}
-          onClick={() => setTab(4)}
-          className="searchTab"
-        >
-          {name4}
-        </button>
-        <button
-          style={{
-            background: tab === 5 ? "white" : "#f1f1f1",
-            overflow: "hidden",
-          }}
-          onClick={() => setTab(5)}
-          className="searchTab"
-        >
-          {name5}
-        </button>
+        )}
       </div>
+
     <div style={{zIndex:'10', height:'4px', background:'white', position:'sticky', top:'179px'}}/>
+          <br/>
       <div style={{ position: "relative", top: "0px", background: "white" }}>
+        {array.map(e => 
         <SearchBar
-          cacheData={cacheData.tab1}
-          setTitle={(e) => setName1(e)}
-          key={1}
-          index={1}
-          display={tab === 1 ? "block" : "none"}
+          recent={cacheData['search']}
+          cacheData={cacheData[`tab${e}`]}
+          setTitle={(input) => handleChange(input, e)}
+          key={e}
+          index={e}
+          display={tab === e ? "block" : "none"}
         />
-        <SearchBar
-          cacheData={cacheData.tab2}
-          setTitle={(e) => setName2(e)}
-          key={2}
-          index={2}
-          display={tab === 2 ? "block" : "none"}
-        />
-        <SearchBar
-          cacheData={cacheData.tab3}
-          setTitle={(e) => setName3(e)}
-          key={3}
-          index={3}
-          display={tab === 3 ? "block" : "none"}
-        />
-        <SearchBar
-          cacheData={cacheData.tab4}
-          setTitle={(e) => setName4(e)}
-          key={4}
-          index={4}
-          display={tab === 4 ? "block" : "none"}
-        />
-        <SearchBar
-          cacheData={cacheData.tab5}
-          setTitle={(e) => setName5(e)}
-          key={5}
-          index={5}
-          display={tab === 5 ? "block" : "none"}
-        />
+        )}
       </div>
     </>
   );

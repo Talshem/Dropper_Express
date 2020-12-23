@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { UserContext } from "./Providers/UserProvider";
 import { Application } from "./Components";
 import network from "./Helpers/Network";
-import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await network.get("/auto");
-      console.log(data);
       if (data) setUserState(data);
       setResponse(true);
     };

@@ -66,11 +66,11 @@ export default function AliexpressItem({
         <br />
       </a>
       <span>
-        sold: <b>{sold}</b> | price: <b>{price}$</b>
+        Sold: <b>{sold}</b> | Price: <b>{price}$</b>
       </span>
       <br />
       <span>
-        rating: <b>{rating ? rating : "none"}</b> | reviews: <b>{reviews}</b> |
+        Rating: <b>{rating ? rating : "none"}</b> | Reviews: <b>{reviews}</b> |
         Delivery:{" "}
         {isNaN(shipping[shippingMethod].days) ? (
           <span>
@@ -87,7 +87,7 @@ export default function AliexpressItem({
       <br />
       <b style={{ fontSize: "20px" }}>
         {" "}
-        total: {(price + shipping[shippingMethod].price).toFixed(2)}$
+        Total: {(price + shipping[shippingMethod].price).toFixed(2)}$
       </b>
       <br />
       <button

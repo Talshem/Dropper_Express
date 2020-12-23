@@ -25,7 +25,7 @@ return err
 }
 
 async function userLogin ({type, email, password, name, token}) {
-try {
+  try {
 const { data } = await axios.put('/login', {
 type, email, password, name, token
 })

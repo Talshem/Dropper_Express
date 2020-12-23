@@ -10,9 +10,11 @@ import AliexpressSection from "./AliexpressSection";
 import SummaryData from "./SummaryData";
 import CompareChart from "./CompareChart";
 import SearchBar from "./SearchBar";
+import RecentSearches from './RecentSearches'
 
 export {
   SearchBar,
+  RecentSearches,
   CompareChart,
   SummaryData,
   AliexpressItem,

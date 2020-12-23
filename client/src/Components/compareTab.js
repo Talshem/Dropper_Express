@@ -8,12 +8,13 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { Fade } from "@material-ui/core";
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
+import socketIOClient from "socket.io-client";
+import network from "../Helpers/Network";
 
 function CompareTab({ search, setSearch, toggle, index, cacheData }) {
   const [ebay, setEbay] = useState(null);
   const [aliexpress, setAliexpress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dots, setDots] = useState("");
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -23,9 +24,13 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      const socket = socketIOClient("/");
+      socket.on(`${user.email}${index}`, (data) => {
+        setLoading(data);
+      });
       try {
         setLoading("Scanning product");
-        const { data } = await axios.get(
+        const { data } = await network.get(
           `/scrape?product=${search}&email=${user.email}&index=${index}`
         );
         if (!data.ebay || !data.aliexpress) {
@@ -41,22 +46,10 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
         return setSearch("");
       }
       setLoading(false);
+      return () => socket.disconnect();
     };
-    if (!loading && search && search !== "") fetchData();
+    if (!loading && search && search !== "" && toggle > 0) fetchData();
   }, [toggle]);
-
-  useEffect(() => {
-    if (loading) {
-    const interval = setInterval(() => {
-      if (dots === " . . .") {
-        setDots("");
-      } else {
-        setDots((e) => `${e} .`);
-      }
-    }, 250);
-    return () => clearInterval(interval);
-  }
-  }, [dots]);
 
   const override = `
   position:relative;
@@ -82,16 +75,16 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
       ></LoadingOverlay>
       {ebay && aliexpress && !loading && (
         <>
-        {search && <h1>{search}</h1>}
-            {ebay.length > 0 && aliexpress.length > 0 ? (
+          {ebay.length > 0 && aliexpress.length > 0 ? (
             <ItemProvider>
+              {search && <h1 style={{ fontWeight: "100", fontSize: "50px", letterSpacing:'15px' }}>{search.toUpperCase()}</h1>}
               <SummaryData
+                index={index}
                 range={ebay.map((e) =>
                   Number((e.price + e.shipping.price).toFixed(2))
                 )}
               />
-              <br />
-              <br />
+              <br/><br/>
               <div style={{ display: "flex" }}>
                 <EbaySection ebay={ebay} />
                 <hr />
@@ -99,7 +92,9 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
               </div>
             </ItemProvider>
           ) : (
-            <h1>Something went wrong...</h1>
+            <h1 style={{ fontWeight: "100", fontSize: "50px" }}>
+              Something went wrong...
+            </h1>
           )}
         </>
       )}

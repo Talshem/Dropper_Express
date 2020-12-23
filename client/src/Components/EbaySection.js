@@ -69,7 +69,6 @@ export default function EbaySection({ ebay }) {
     }
   }
 
-
   return (
     <div className="ebay">
       {ebay && (
@@ -115,7 +114,13 @@ export default function EbaySection({ ebay }) {
               }, 250)}
               defaultValue={5000}
               min={0}
-              max={Math.max(...ebay.map((e) => e["shipping"]["days"][1] ? e["shipping"]["days"][1] : e["shipping"]["days"][0]))}
+              max={Math.max(
+                ...ebay.map((e) =>
+                  e["shipping"]["days"][1]
+                    ? e["shipping"]["days"][1]
+                    : e["shipping"]["days"][0]
+                )
+              )}
             />
           </div>
           <div className={classes.root}>
@@ -198,9 +203,9 @@ export default function EbaySection({ ebay }) {
             })}
           <Button
             style={{ margin: "5px" }}
-            onClick={() =>
-              page + 4 < sortItems(ebay).length - 1 && setPage((e) => e + 4)
-            }
+            onClick={() => { 
+              sortItems(ebay)[page + 4] && setPage((e) => e + 4)
+           }}
           >
             Next
           </Button>

@@ -1,36 +1,36 @@
-const jwt = require('jsonwebtoken');
-const {OAuth2Client} = require('google-auth-library');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
+require("dotenv").config();
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
-const { REFRESH_SECRET } = process.env
+const { REFRESH_TOKEN_SECRET } = process.env;
 
 function generateToken(email) {
-return jwt.sign(
-{email},
-REFRESH_SECRET,
-{ expiresIn: '1d' })
+  return jwt.sign({ email }, REFRESH_TOKEN_SECRET, { expiresIn: "1d" });
 }
 
-async function verifyGoogleToken(token) {
-try {
-  const ticket = await client.verifyIdToken({
-      idToken: token.split('bearer ')[1],
-      audience: process.env.CLIENT_ID
-  });
-  const payload = ticket.getPayload();
-  return ({email: payload.email})
-} catch (err) {
-return false
-}
+async function verifyToken(token, type) {
+  switch (type) {
+    case "google":
+      try {
+        const ticket = await client.verifyIdToken({
+          idToken: token.split("bearer ")[1],
+          audience: process.env.CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        return { email: payload.email };
+      } catch (err) {
+        return false;
+      }
+    case "normal":
+      token = token.slice(7, token.length);
+      return jwt.verify(token, REFRESH_TOKEN_SECRET, (error, decoded) => {
+        if (error) return false;
+        return decoded;
+      });
+    default:
+      return false;
+  }
 }
 
-function verifyNormalToken(token) {
-    token = token.slice(7, token.length);
-      return jwt.verify(token, REFRESH_SECRET, (error, decoded) => {
-        if (error) return false
-        return decoded
-      })
-}
-
-module.exports = { generateToken, verifyNormalToken, verifyGoogleToken }
+module.exports = { generateToken, verifyToken };

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const { generateToken } = require('../middlewares/checkToken')
+const { generateToken } = require("../middlewares/checkToken");
 
 mongoose.set("useFindAndModify", false);
 
@@ -16,7 +16,7 @@ mongoose
   });
 
 const UserSchema = new mongoose.Schema({
-  email: String,
+  email: { type: String, unique: true },
   name: String,
   token: String,
   type: String,
@@ -35,33 +35,62 @@ const User = mongoose.model("User", UserSchema);
 
 const createUser = async (user) => {
   const { email, name, type, password } = user;
-  
-  if (type === 'normal') {
-  if (await findUser(user)) return null
-  }
+  if (type === "normal" && await findUserByEmail(user)) return null;
   const newUser = new User({
-email, name, type, password, token:generateToken(email)
+    email,
+    name,
+    type,
+    password,
+    token: generateToken(email),
   });
-  newUser.save().then(() => {
+  return await newUser.save().then(() => {
     return newUser;
   });
 };
 
-const findUser = async (user) => {
-const { email, type, password, name, token } = user;
-let result;
-if (type === 'google') {
-result = await User.findOne({email}) ? await User.findOneAndUpdate({email}, {token}, { new: true }) : await createUser(user)
-} else {
-result = await User.findOneAndUpdate({email, password}, {token: generateToken(email)}, { new: true })
-}
-return result;
+const findUserOrCreate = async (user) => {
+  const { email, type, password, name, token } = user;
+  let result;
+  if (type === "google") {
+    result = (await User.findOne({ email }))
+      ? await User.findOne({ email })
+      : await createUser(user);
+  } else {
+    result = await User.findOne({ email });
+  }
+  return result;
 };
 
-const findUserByEmail = async (email) => {
-let result = await User.findOne({email})
-return result;
+const findUserByEmail = async (user) => {
+  const { email } = user;
+  
+  return await User.findOne({ email });
+};
+
+const findUserAndUpdateToken = async (user) => {
+  const { email, token } = user;
+  return await User.findOneAndUpdate(
+    { email },
+    { token: generateToken(email) },
+    { new: true }
+  );
+};
+
+const updateUserPassword = async (user) => {
+  const { email, password } = user;
+  return await User.updateOne(
+    { email },
+    { password },
+    { new: true }
+  );
 };
 
 
-module.exports = { User, createUser, findUser, findUserByEmail };
+module.exports = {
+  User,
+  createUser,
+  findUserOrCreate,
+  findUserByEmail,
+  findUserAndUpdateToken,
+  updateUserPassword
+};

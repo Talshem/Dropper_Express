@@ -6,7 +6,7 @@ const EbayFees = (e) => {
   return e * 0.1 + (e * 0.029 + 0.3);
 };
 
-export default function Summarydata({ range }) {
+export default function Summarydata({ range, index }) {
   const [profit, setProfit] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
   const { selectedEbayItem, selectedAliexpressItem } = useContext(ItemContext);
@@ -23,7 +23,7 @@ export default function Summarydata({ range }) {
     <div className="profitSection">
       {selectedEbayItem && selectedAliexpressItem && (
         <>
-          <h2>How much profit do you want to make? </h2>
+          <h2 style={{fontWeight:'500'}}>How much profit do you want to make? </h2>
           <input
             style={{
               width: "70%",
@@ -67,7 +67,7 @@ export default function Summarydata({ range }) {
         </>
       )}
       <br />
-      <CompareChart price={finalPrice} range={range} />
+      <CompareChart index={index} price={finalPrice} range={range} />
     </div>
   );
 }

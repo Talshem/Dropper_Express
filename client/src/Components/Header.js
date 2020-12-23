@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
 import { Button } from "@material-ui/core";
 
-const images = [banner1, banner2, banner3, banner4];
+const images = [banner2, banner4 , banner1, banner3];
 
 export default function Header(props) {
   const [index, setIndex] = useState(0);
@@ -60,7 +60,7 @@ export default function Header(props) {
             style={{ textDecoration: "none", color: "white" }}
             href="#searchBar"
           >
-            Scan Now
+            SCAN NOW
           </a>
         </div>
         {images.map((e, i) => (

@@ -1,6 +1,8 @@
+import zIndex from "@material-ui/core/styles/zIndex";
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, YAxis, Tooltip } from "recharts";
-function CompareChart({ price, range }) {
+import { AreaChart, Area, YAxis, Tooltip, ReferenceLine  } from "recharts";
+
+function CompareChart({ price, range, index}) {
   const [data, setData] = useState([]);
   const [percentage, setPercentage] = useState(0);
 
@@ -8,7 +10,7 @@ function CompareChart({ price, range }) {
     setData(
       range
         .sort(function (a, b) {
-          return b - a;
+          return a - b;
         })
         .map((e) => ({ difference: e - price }))
     );
@@ -32,16 +34,16 @@ function CompareChart({ price, range }) {
 
   const off = gradientOffset();
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active) {
       return (
         <div style={{ background: "rgb(256,256,256,0.75)" }}>
           {payload[0].value > 0 ? (
-            <p className="label">{`Seller offers ${payload[0].value.toFixed(
+            <p className="label">{`Seller offers this product for ${payload[0].value.toFixed(
               2
             )}$ more than you`}</p>
           ) : (
-            <p className="label">{`Seller offers ${payload[0].value.toFixed(
+            <p className="label">{`Seller offers this product for ${payload[0].value.toFixed(
               2
             )}$ less than you`}</p>
           )}
@@ -57,12 +59,12 @@ function CompareChart({ price, range }) {
       <p>
         <u>
           Your product is cheaper than <b>{percentage.toFixed(2)}%</b> of the
-          Listings:
+          scanned listings:
         </u>
       </p>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <p style={{ width: "6%", marginTop: "40px" }}>
-          Difference between ebay's offers to yours
+        <p style={{ width: "6%", marginTop: "30px" }}>
+          Price difference between ebay's offers to yours
         </p>
         <AreaChart
           width={800}
@@ -75,10 +77,11 @@ function CompareChart({ price, range }) {
             bottom: 0,
           }}
         >
+          <ReferenceLine y={0} stroke="grey" strokeDasharray="5 5" />
           <Tooltip content={<CustomTooltip />} />
           <YAxis tickFormatter={(e) => `${e}$`} />
           <defs>
-            <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient  id={`splitColor${index}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset={off} stopColor="green" stopOpacity={1} />
               <stop offset={off} stopColor="red" stopOpacity={1} />
             </linearGradient>
@@ -87,10 +90,11 @@ function CompareChart({ price, range }) {
             type="monotone"
             dataKey="difference"
             stroke="#000"
-            fill="url(#splitColor)"
+            fill={`url(#splitColor${index})`}
           />
         </AreaChart>
       </div>
+      <br/><br/>
     </>
   );
 }

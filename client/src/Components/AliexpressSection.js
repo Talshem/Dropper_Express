@@ -198,6 +198,7 @@ export default function AliexpressSection({ aliexpress }) {
               Reviews
             </Typography>
             <Slider
+              style={{ color: "grey" }}
               valueLabelDisplay="auto"
               onChange={_.debounce((e, newValue) => {
                 setReviews(newValue);
@@ -256,7 +257,7 @@ export default function AliexpressSection({ aliexpress }) {
             })}
           <Button
             onClick={() =>
-              page + 4 <= sortItems(aliexpress).length - 1 &&
+              sortItems(aliexpress)[page + 4] &&
               setPage((e) => e + 4)
             }
           >

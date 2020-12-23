@@ -1,16 +1,42 @@
 const express = require("express");
 const unknownEndpoint = require("./middlewares/errorHandler");
-const ebayScraper = require("./ebay");
-const aliExpressScraper = require("./aliexpress");
 const fs = require("fs");
-const { createUser, findUser, findUserByEmail } = require("./models/user");
-const redis = require("redis");
 const {
-  verifyNormalToken,
-  verifyGoogleToken,
-} = require("./middlewares/checkToken");
+  createUser,
+  findUserOrCreate,
+  findUserByEmail,
+  updateUserPassword,
+  findUserAndUpdateToken,
+} = require("./models/user");
+const redis = require("redis");
+const { verifyToken } = require("./middlewares/checkToken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const jwt = require("jsonwebtoken");
+const mailer = require('./helpers/mailer')
 
+require("dotenv").config();
 
+const app = express();
+app.use(express.json());
+
+const http = require("http");
+const server = http.createServer(app);
+
+const socketIo = require("socket.io");
+const io = socketIo(server);
+
+// -----------------------------------------------------------------------------------------
+
+io.sockets.on("connection", (socket) => {
+  console.log("Client Connected!");
+
+  socket.on("disconnect", () => {
+    console.log("Client Disconnected!");
+  });
+});
+
+const sendNotification = (room, message) => io.emit(room, message);
 
 const bluebird = require("bluebird");
 bluebird.promisifyAll(redis);
@@ -20,8 +46,33 @@ client.on("connect", function () {
   console.log("connected to redis");
 });
 
-const app = express();
-app.use(express.json());
+app.get("/scrape", async (req, res) => {
+  const { authorization, type } = req.headers;
+  if (!(await verifyToken(authorization, type)))
+    return res.status(404).send("Permission Denied");
+  const { product, email, index } = req.query;
+  const room = `${email}${index}`;
+  try {
+    client.rpush("search", product);
+    client.del(`${email}${index}`);
+    const ebay = await ebayScraper(product, "United States", room);
+    const aliexpress = await aliExpressScraper(product, "United States", room);
+    sendNotification(room, "Saves Data");
+    if (ebay.length > 0 && aliexpress.length > 0) {
+      client.set(
+        `${email}${index}`,
+        JSON.stringify({ ebay, aliexpress, product })
+      );
+      client.expire(`${email}${index}`, 1 * 60 * 60 * 24);
+    }
+    sendNotification(room, false);
+    return res.send({ ebay, aliexpress });
+  } catch (err) {
+    sendNotification(room, false);
+    console.log("failure", err);
+    return res.send(err);
+  }
+});
 
 //mock data for testing
 const aliexpressMock = JSON.parse(fs.readFileSync("./aliexpressMock.json"));
@@ -29,6 +80,9 @@ const ebayMock = JSON.parse(fs.readFileSync("./ebayMock.json"));
 const data = { aliexpressMock, ebayMock };
 
 app.get("/history/:email", async (req, res) => {
+  const { authorization, type } = req.headers;
+  if (!(await verifyToken(authorization, type)))
+    return res.status(404).send("Permission Denied");
   const { email } = req.params;
   try {
     const results = {
@@ -47,6 +101,9 @@ app.get("/history/:email", async (req, res) => {
       tab5:
         (await client.getAsync(`${email}5`)) &&
         JSON.parse(await client.getAsync(`${email}5`)),
+      search:
+        (await client.lrangeAsync("search", -11, -1)) &&
+        (await client.lrangeAsync("search", -11, -1)),
     };
     return res.send(results);
   } catch (err) {
@@ -58,8 +115,20 @@ app.get("/history/:email", async (req, res) => {
 app.post("/signup", async (req, res) => {
   const { email, name, type, password } = req.body;
   try {
-    const results = await createUser({ email, name, type, password });
-    return res.send(results);
+    return bcrypt.hash(
+      password,
+      saltRounds,
+      async function (err, hashedPassword) {
+        if (err) return res.send(null);
+        const results = await createUser({
+          email,
+          name,
+          type,
+          password: hashedPassword,
+        });
+        return res.send(results);
+      }
+    );
   } catch (err) {
     return res.send(err);
   }
@@ -68,13 +137,11 @@ app.post("/signup", async (req, res) => {
 app.get("/auto", async (req, res) => {
   const { authorization, type } = req.headers;
   try {
-    let token =
-      type === "google"
-        ? await verifyGoogleToken(authorization)
-        : verifyNormalToken(authorization);
+    let token = await verifyToken(authorization, type);
     let result = null;
     if (token) {
-      result = await findUserByEmail(token.email);
+      result = await findUserByEmail({email:token.email});
+
     }
     return res.send(result);
   } catch (err) {
@@ -85,30 +152,80 @@ app.get("/auto", async (req, res) => {
 app.put("/login", async (req, res) => {
   const { email, type, password, name, token } = req.body;
   try {
-    const results = await findUser({ email, type, password, name, token });
-    return res.send(results);
+    const results = await findUserOrCreate({
+      email,
+      type,
+      password,
+      name,
+      token,
+    });
+    if (!results) return res.send(results);
+    if (results && type === "google") return res.send(results);
+
+    return bcrypt.compare(
+      password,
+      results.password,
+      async function (err, result) {
+        if (err) return res.send(null);
+        return res.send(await findUserAndUpdateToken(results));
+      }
+    );
   } catch (err) {
     return res.send(err);
   }
 });
 
-app.get("/scrape", async (req, res) => {
-  const { product, email, index } = req.query;
+app.post("/passwordReset", async (req, res) => {
+  const { email } = req.body;
+  const user = await findUserByEmail({email});
+  if (!user) return res.status(400).json({ message: "User doesn't exist" });
   try {
-    console.log("Scraping Ebay...");
-    const ebay = await ebayScraper(product, "United States");
+    const resetToken = jwt.sign(
+      {email},
+      process.env.EMAIL_TOKEN_SECRET,
+      {expiresIn: "1h"}
+      );
+    return mailer.sendHTMLMail(
+      req.body.email,
+      "Reset Your Password",
+      `<p>
+Please fill up the following input with your desired new password.
+</p>
+<form action="${process.env.IP_ADDRESS}/resetAuth" method="GET">
+<input name="token" value="${resetToken}" type="hidden">
+<br>
+<input name="password" type="text">
+<button style="width: 200px; background-color: grey; color: white;">Reset</button>
+</form>`,
+      (error, info) => {
+        if (error) return res.status(400).json({ message: "Email Invalid" });
+      }
+    );
+  } catch (error) {
+    return res.status(400).json({ message: "Cannot process request" });
+  }
+});
 
-    console.log("Scraping Aliexpress...");
-    const aliexpress = await aliExpressScraper(product, "United States");
-
-    if (ebay.length > 0 && aliexpress.length > 0) {
-      client.set(`${email}${index}`, JSON.stringify({ ebay, aliexpress, product }));
-      client.expire(`${email}${index}`, 1 * 60 * 60 * 24);
-    }
-    return res.send({ ebay, aliexpress });
+app.get("/resetAuth", async (req, res) => {
+  const { token, password } = req.query;
+  try {
+    return jwt.verify(
+      token,
+      process.env.EMAIL_TOKEN_SECRET,
+      (error, decoded) => {
+        if (error) return res.status(404).send("Verification has failed, couldn't complete proccess");
+        bcrypt.hash(password, saltRounds, async function (err, hashedPassword) {
+          if (err) return res.status(404).send("Undetected Error");
+          await updateUserPassword({
+            email: decoded.email,
+            password: hashedPassword,
+          });
+          return res.send("Password has been successfully changed");
+        });
+      }
+    );
   } catch (err) {
-    console.log("failure", err);
-    return res.send(err);
+    res.status(404).send(err);
   }
 });
 
@@ -122,4 +239,7 @@ app.get("/aliexpressMock", async (req, res) => {
 
 app.use(unknownEndpoint);
 
-module.exports = app;
+module.exports = { server, sendNotification };
+
+const ebayScraper = require("./ebay");
+const aliExpressScraper = require("./aliexpress");
