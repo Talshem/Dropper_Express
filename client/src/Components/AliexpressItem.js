@@ -117,6 +117,8 @@ export default function AliexpressItem({
         <br />
         <br />
         <details
+        className="shippingDetails"
+          onClick={(e) => e.stopPropagation()}
           ref={details}
           onMouseLeave={() => (details.current.open = false)}
         >

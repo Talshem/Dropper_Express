@@ -69,3 +69,8 @@ position:relative;
 .aliexpress {
   width: 100%;
 }
+
+.shippingDetails:hover{
+ background: linear-gradient(to right, transparent, rgb(0,0,0,0.1), transparent)
+
+}

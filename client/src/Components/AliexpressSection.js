@@ -60,8 +60,6 @@ export default function AliexpressSection({ aliexpress }) {
         return false;
       });
 
-console.log(e)
-
     switch (sort) {
       case "sold":
         return e.sort((a, b) => {

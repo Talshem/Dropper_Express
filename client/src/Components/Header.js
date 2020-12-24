@@ -62,7 +62,7 @@ const subBanner = (margin) => (
           <div
           style={{top:'8px', zIndex:11, position:'fixed', right:'10px'}}
         >
-          <Button disabled style={{ color: " rgb(155, 123, 123)" }}>
+          <Button disabled style={{ color: " rgb(155, 123, 133)" }}>
          {user.name}
           </Button>{" "}
           | <Logout />

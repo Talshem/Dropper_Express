@@ -7,12 +7,16 @@ export default function SearchBar({ display, setTitle, index, cacheData, recent 
   const [input, setInput] = useState("");
   const [search, setSearch] = useState(null);
   const [toggle, setToggle] = useState(0);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (cacheData && cacheData.product) {
       setTitle(cacheData.product);
       setSearch(cacheData.product);
     }
+  setTimeout(() => {
+    setRefresh(true)
+    }, 200);
   }, [cacheData]);
 
   return (
@@ -25,7 +29,7 @@ export default function SearchBar({ display, setTitle, index, cacheData, recent 
         minHeight: "400px",
       }}
     >
-      <br />
+      {refresh && <> <br />
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -62,6 +66,8 @@ export default function SearchBar({ display, setTitle, index, cacheData, recent 
           }}
         />
       )}
+      </>
+      }
     </center>
   );
 }
