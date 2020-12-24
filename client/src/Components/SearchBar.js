@@ -3,7 +3,7 @@ import { CompareTab } from "./";
 import ErrorBoundary from "../Helpers/ErrorBoundary";
 import { RecentSearches } from "./";
 
-function SearchBar({ display, setTitle, index, cacheData, recent }) {
+export default function SearchBar({ display, setTitle, index, cacheData, recent }) {
   const [input, setInput] = useState("");
   const [search, setSearch] = useState(null);
   const [toggle, setToggle] = useState(0);
@@ -19,7 +19,7 @@ function SearchBar({ display, setTitle, index, cacheData, recent }) {
     <center
       style={{
         display: display,
-        zIndex: "3",
+        zIndex: "5",
         background: "white",
         position: "relative",
         minHeight: "400px",
@@ -31,7 +31,7 @@ function SearchBar({ display, setTitle, index, cacheData, recent }) {
         onChange={(e) => setInput(e.target.value)}
         className="searchBar"
       />
-      <button
+            <button
         onClick={() => {
           if (input.trim() !== "") {
             setTitle(input);
@@ -65,5 +65,3 @@ function SearchBar({ display, setTitle, index, cacheData, recent }) {
     </center>
   );
 }
-
-export default SearchBar;

@@ -3,6 +3,11 @@ const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
+const TYPE = {
+GOOGLE: 'google',
+NORMAL: 'normal'
+}
+
 const { REFRESH_TOKEN_SECRET } = process.env;
 
 function generateToken(email) {
@@ -11,7 +16,7 @@ function generateToken(email) {
 
 async function verifyToken(token, type) {
   switch (type) {
-    case "google":
+    case TYPE.GOOGLE:
       try {
         const ticket = await client.verifyIdToken({
           idToken: token.split("bearer ")[1],
@@ -22,7 +27,7 @@ async function verifyToken(token, type) {
       } catch (err) {
         return false;
       }
-    case "normal":
+    case TYPE.NORMAL:
       token = token.slice(7, token.length);
       return jwt.verify(token, REFRESH_TOKEN_SECRET, (error, decoded) => {
         if (error) return false;
@@ -33,4 +38,4 @@ async function verifyToken(token, type) {
   }
 }
 
-module.exports = { generateToken, verifyToken };
+module.exports = { generateToken, verifyToken, TYPE };

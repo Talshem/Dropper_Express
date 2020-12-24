@@ -1,11 +1,12 @@
 
+
 .header{
 position: fixed;
 display: inline;
-top:0;
+top:0px;
 width: 100vw;
-height: 90px;
-background-color: white;
+height: 125px;
+background-color: rgb(255, 255, 255);
 z-index: 5;
 }
 
@@ -20,11 +21,11 @@ background-color: rgb(245, 244, 239);
 }
 
 .pageTitle{
-top:90px;
+top:120px;
 position: fixed;
 z-index: 5;
 margin-top: 0;
-width: 100%;
+width: 100vw;
 height:36px;
 text-align: center;
 background: rgb(165, 133, 133);
@@ -34,40 +35,7 @@ font-weight: 100;
 font-size: 24px;
 }
 
-hr{
-    border: 0;
-    border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    background: #999;
-}
 
-
-.tabsBar{
-position: sticky;
-top:129px;
-width: 100vw;
-margin-top:3px;
-z-index: 5;
-background: rgb(223, 206, 206);
-height: 50px;
-
-}
-
-.searchTab{
-z-index: 2;
-border:none;
-height: 40px;
-margin-left:20px;
-padding:10px;
-width:150px;
-font-size: 16px;
-margin-top: 12px;
-border: 3px solid white;
-background:#f1f1f1;
-box-shadow: 2px -1px 2px rgb(190, 159, 159);
-border-top-left-radius: 5px;
-border-top-right-radius: 5px;
-}
 
 
 summary, button:focus, button {
@@ -75,9 +43,6 @@ summary, button:focus, button {
     outline: none;
 }
 
-button:active {
-    background:grey
-}
 
 .searchBar{
     border-top-left-radius: 5px;
@@ -116,22 +81,47 @@ position: absolute;
 }
 
 .refButton{
-opacity: 0.7;
-z-index: 2;
 position: absolute;;
-left:38%;
-width: 22%;
-padding: 1%;
-margin-top:10%;
+width: 20%;
+height: 100px;
+margin-top:70px;
 border-radius: 2px;
 font-weight: 100;
-font-size: 60px;
+word-wrap: break-word;
+font-size: 70px;
 text-align: center;
-background:transparent;
-color:white;
-box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.5);
-text-shadow: 1.5px 1.5px 1px rgb(0, 0, 0, 0.5);
+box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.75);
+text-shadow: 1px 1px 3px rgb(0, 0, 0, 0.5);
 border: 3.5px solid white;
+transition: 0.2s;
+animation-name:loading;
+animation-duration: 2s;
+animation-iteration-count: 1;
+}
+
+.refButton:hover{
+transform: scale(1.2)
+}
+
+.subBanner {
+position: absolute;;
+width: 20%;
+height:505px;
+margin-top:225px;
+border-radius: 2px;
+text-align: center;
+box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.5);
+border: 3.5px solid white;
+
+animation-name:loading;
+animation-duration: 2s;
+animation-iteration-count: 1;
+}
+
+@keyframes loading {
+    0% {opacity: 0;}
+    75% {opacity: 0;}
+    100% {opacity: 0.7;}
 }
 
 .loadingText{

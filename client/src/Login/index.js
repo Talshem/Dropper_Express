@@ -5,4 +5,9 @@ import GoogleLogin from "./GoogleLogin";
 import Logout from "./Logout";
 import PasswordReset from "./PasswordReset";
 
-export { HomePage, Login, SignUp, GoogleLogin, Logout, PasswordReset };
+const TYPE = {
+GOOGLE: 'google',
+NORMAL: 'normal'
+}
+
+export { HomePage, Login, SignUp, GoogleLogin, Logout, PasswordReset, TYPE };

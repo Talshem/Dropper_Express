@@ -30,36 +30,11 @@ export default function EbayItem({
   }, []);
 
   return (
-    <div
-      className="productContainer"
-      style={{
-        background:
-          selectedEbayItem && selectedEbayItem.url === url
-            ? "rgb(141, 110, 110, 0.3)"
-            : "rgb(255, 252, 246)",
-      }}
-    >
-      <h3>{title.split(" ").slice(0, 8).join(" ")}</h3>
+    <div style={{display:'block'}}>
       <a target="_blank" href={url}>
-        <img src={image} height="100" width="100" />
-        <br />
+        <img className="productImg" src={image} height="132" width="132" />
       </a>
-      <span>
-        Sold: <b>{sold}</b> | Price: <b>{price}$</b>
-      </span>
-      <br />
-      <span>
-        Shipping: <b>{shipping.price ? `${shipping.price}$` : "Free"}</b> | 
-        Delivery: <b>{shipping.days[0]}</b> to <b>{shipping.days[1]}</b>{" "}
-        days
-      </span>
-      <br />
-      <br />
-      <span style={{ fontSize: "20px" }}>
-        <b> Total: {(price + shipping.price).toFixed(2)}$</b>
-      </span>
-      <br />
-      <button
+      <div
         onClick={() =>
           handleSelect(
             {
@@ -74,11 +49,30 @@ export default function EbayItem({
             "ebay"
           )
         }
+        className="productContainer"
+        style={{
+          background:
+            selectedEbayItem && selectedEbayItem.url === url
+              ? "rgb(141, 110, 110, 0.3)"
+              : "rgb(245, 244, 239)",
+        }}
       >
-        {" "}
-        Select{" "}
-      </button>
-      <br />
+        <div style={{ width: "100%" }}>
+          <h3 style={{ marginTop: "0" }}>
+            {title.split(" ").slice(0, 8).join(" ")}
+          </h3>
+          <span>
+            Sold: <b>{sold}</b> | Price: <b>{price}$</b> | Shipping:{" "}
+            <b>{shipping.price ? `${shipping.price}$` : "Free"}</b> | Delivery:{" "}
+            <b>{shipping.days[0]}</b> to <b>{shipping.days[1]}</b> days
+          </span>
+          <br />
+          <br />
+          <span style={{ fontSize: "20px" }}>
+            <b> Total: {(price + shipping.price).toFixed(2)}$</b>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

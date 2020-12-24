@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./Application.css";
-import axios from "axios";
 import { EbaySection, AliexpressSection, SummaryData } from ".";
 import { ItemProvider } from "../Providers/ItemProvider";
 import LoadingOverlay from "react-loading-overlay";
@@ -17,6 +16,7 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
   const [loading, setLoading] = useState(false);
   const { user } = useContext(UserContext);
 
+  
   useEffect(() => {
     setEbay(cacheData && cacheData.ebay);
     setAliexpress(cacheData && cacheData.aliexpress);
@@ -87,7 +87,7 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
               <br/><br/>
               <div style={{ display: "flex" }}>
                 <EbaySection ebay={ebay} />
-                <hr />
+                <hr className="hrProduct"/>
                 <AliexpressSection aliexpress={aliexpress} />
               </div>
             </ItemProvider>
@@ -102,4 +102,4 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
   );
 }
 
-export default React.memo(CompareTab);
+export default CompareTab;

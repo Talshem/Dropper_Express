@@ -1,84 +1,71 @@
+.itemContainer {
+  width: 100%;
+}
 
-.itemContainer{
-    width:100%
+.hrProduct {
+  border: 0;
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    rgb(240, 240, 240),
+    rgb(177, 177, 177),
+    rgb(240, 240, 240)
+  );
+}
+
+.profitSection {
+  background-color: rgb(245, 244, 239);
+  padding: 20px;
+  width: 75%;
+}
+
+.productContainer {
+  overflow-y: auto;
+  cursor: pointer;
+  color: rgb(255, 252, 246);
+  margin: 5px;
+  font-size: 14px;
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+  height: 125px;
+  width: 70%;
+  color: black;
+  padding: 5px;
+  display: inline-block;
+
+}
+
+.productImg {
+top:-4px;
+border: 2px solid #eeeeee;
+border-top-left-radius: 10px;
+border-bottom-left-radius: 10px;
+position:relative;
 }
 
 
-hr {
-    border: 0;
-    width: 1px;
-    background: #333;
-    background-image: linear-gradient(to bottom, rgb(240, 240, 240), rgb(177, 177, 177), rgb(240, 240, 240));
+.shippingTable td,
+.shippingTable th {
+  border: 2px solid white;
+  padding: 15px;
 }
-
-
-.profitSection{
-    background-color: rgb(245, 244, 239);
-    padding: 20px;
-    width: 75%;
-}
-
-.productContainer{
-    overflow-y: auto;
-    color: rgb(255, 252, 246);
-margin: 15px;
-font-size: 14px;
-border: 2px solid rgb(241, 241, 241);
-display: inline-block;
-box-shadow: 2px 2px 3px rgb(216, 216, 216);
-border-radius: 5px;
-height: 350px;
-width: 40%;
-color:black;
-padding:5px;
-}
-
-
-
-.productContainer img {
-border-radius: 5px;
-border: 2px solid rgb(218, 218, 218)
-}
-
-.productContainer button {
-background: rgb(255, 255, 255, 0.5);
-width: 80%;
-height:30px;
-border-radius: 5px;
-border: 2px solid rgba(196, 196, 196, 0.25);
-}
-
-.productContainer button:hover {
-border: 2px solid  rgba(196, 196, 196, 0.5);
-}
-
-.productContainer button:active {
-border: rgba(196, 196, 196, 0.5);
-background: rgba(196, 196, 196, 0.5);
-}
-    
-
-    .shippingTable td, .shippingTable th {
-        border: 2px solid white;
-        padding:15px;
-      }
 
 .shippingTable th {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 
+.shippingTable {
+  box-shadow: 0px 0 5px rgb(175, 175, 175);
+  width: 48%;
+  border-radius: 5px;
+  border-collapse: collapse;
+  z-index: 5;
+  background: #faf9f6;
+  left: 51%;
+  position: absolute;
+}
 
-      .shippingTable {
-          box-shadow: 0px 0 5px rgb(175, 175, 175);
-          width: 48%;
-          border-radius: 5px;
-          border-collapse: collapse;
-          z-index: 5;
-          background: #faf9f6;
-        left:51%;
-          position: absolute;
-      }
-
-      .ebay, .aliexpress {
-          width:100%
-      }
+.ebay,
+.aliexpress {
+  width: 100%;
+}

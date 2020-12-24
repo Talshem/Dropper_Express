@@ -51,7 +51,7 @@ export default function AliexpressSection({ aliexpress }) {
         for (let method of e["shipping"]) {
           if (
             isNaN(method["days"])
-              ? method["days"][1] <= Number(delivery)
+              ? method["days"][0] <= Number(delivery)
               : method["days"] <= Number(delivery)
           ) {
             return true;
@@ -59,6 +59,8 @@ export default function AliexpressSection({ aliexpress }) {
         }
         return false;
       });
+
+console.log(e)
 
     switch (sort) {
       case "sold":
@@ -139,7 +141,7 @@ export default function AliexpressSection({ aliexpress }) {
               }, 250)}
               defaultValue={5000}
               min={0}
-              max={Math.max(...aliexpress.map((e) => e["shipping"][0]["days"]))}
+              max={Math.max(...aliexpress.map((e) => !isNaN(e["shipping"][0]["days"]) ? e["shipping"][0]["days"] : e["shipping"][0]["days"][1]))}
             />
           </div>
           <div className={classes.root}>
@@ -218,6 +220,7 @@ export default function AliexpressSection({ aliexpress }) {
                 (e, index) =>
                   e && (
                     <AliexpressItem
+                      delivery={delivery}
                       index={index}
                       key={e.url}
                       image={e.image}

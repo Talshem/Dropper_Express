@@ -9,7 +9,7 @@ const {
   findUserAndUpdateToken,
 } = require("./models/user");
 const redis = require("redis");
-const { verifyToken } = require("./middlewares/checkToken");
+const { verifyToken, TYPE } = require("./middlewares/checkToken");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
@@ -25,7 +25,6 @@ const server = http.createServer(app);
 
 const socketIo = require("socket.io");
 const io = socketIo(server);
-
 // -----------------------------------------------------------------------------------------
 
 io.sockets.on("connection", (socket) => {
@@ -112,6 +111,21 @@ app.get("/history/:email", async (req, res) => {
   }
 });
 
+
+app.delete("/clearCache/:key", async (req, res) => {
+  const { authorization, type } = req.headers;
+  if (!(await verifyToken(authorization, type)))
+    return res.status(404).send("Permission Denied");
+    const { key } = req.params;
+  try {
+    client.del(key);
+    return res.send('Success');
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send('Failure');
+  }
+});
+
 app.post("/signup", async (req, res) => {
   const { email, name, type, password } = req.body;
   try {
@@ -152,22 +166,21 @@ app.get("/auto", async (req, res) => {
 app.put("/login", async (req, res) => {
   const { email, type, password, name, token } = req.body;
   try {
-    const results = await findUserOrCreate({
+    const user = await findUserOrCreate({
       email,
       type,
       password,
       name,
       token,
     });
-    if (!results) return res.send(results);
-    if (results && type === "google") return res.send(results);
-
+    if (!user) return res.send(user);
+    if (user && type === TYPE.GOOGLE) return res.send(user);
     return bcrypt.compare(
       password,
-      results.password,
+      user.password,
       async function (err, result) {
-        if (err) return res.send(null);
-        return res.send(await findUserAndUpdateToken(results));
+        if (err || !result) return res.send(null);
+        return res.send(await findUserAndUpdateToken(user));
       }
     );
   } catch (err) {

@@ -1,69 +1,147 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import { SearchBar } from "./";
-import "./Application.css";
+import "./TabsBar.css";
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
 import network from "../Helpers/Network";
 
-export default function Tabsbar(props) {
-  const [tab, setTab] = useState(1);
-  const [name, setName] = useState({ 1: '', 2: '', 3:'', 4:'', 5:'' });
+const ACTIONS = {
+  ADD: "ADD",
+  REMOVE: "REMOVE",
+};
 
-        const handleChange = (e, index) => {
-            setName(prevState => ({
-                ...prevState,
-                [index]: e
-            }));
-        };
-        
+function reducer(tabs, action) {
+  switch (action.type) {
+    case ACTIONS.ADD:
+      return [...tabs, action.payload];
+    case ACTIONS.REMOVE:
+      return tabs.filter((tab) => tab !== action.payload);
+    default:
+      return;
+  }
+}
+
+export default function Tabsbar(props) {
+  const [focus, setFocus] = useState(1);
+  const [titles, setTitles] = useState({
+    1: "New Tab",
+    2: "New Tab",
+    3: "New Tab",
+    4: "New Tab",
+    5: "New Tab",
+  });
+  const [tabs, dispatch] = useReducer(reducer, []);
   const [cacheData, setCacheData] = useState({});
   const { user } = useContext(UserContext);
+  const [toggle, setToggle] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data } = await network.get(`/history/${user.email}`);
         if (data) setCacheData(data);
+        let flag = false;
+        for (let i = 1; i < 5; i++) {
+          if (data[`tab${i}`] && !tabs.includes(i)) addTab(i);
+          flag = true;
+        }
+      if (!flag) addTab()
       } catch (err) {
         return;
       }
     };
     fetchData();
-  }, []);
+  }, [toggle]);
 
-const array = [1, 2, 3, 4, 5]
+  const handleTitles = (index, content) => {
+    setTitles((prevState) => ({
+      ...prevState,
+      [index]: content.charAt(0).toUpperCase() + content.slice(1),
+    }));
+  };
+
+  const addTab = (e = null) => {
+    if (e) return dispatch({ type: ACTIONS.ADD, payload: e });
+    let i;
+    for (i = 1; i < 5; i++) {
+      if (!tabs.includes(i)) {
+        break;
+      }
+    }
+    if (!tabs.includes(i)) {
+      dispatch({ type: ACTIONS.ADD, payload: i });
+      setFocus(i);
+    }
+  };
+
+  const removeTab = (e) => {
+    Promise.resolve(dispatch({ type: ACTIONS.REMOVE, payload: e }))
+      .then(async () => {
+        await network.delete(`/clearCache/${user.email}${e}`);
+        handleTitles(e, "New Tab");
+        setToggle(Math.random());
+      })
+      .catch(() => {
+        return;
+      });
+  };
 
   return (
     <>
-      <div id="searchBar" style={{ top: "810px", position: "absolute" }} />
+    
+      <div id="searchBar" style={{ top: "950px", position: "absolute", width:'0' }} />
       <div className="tabsBar">
-        {array.map(e => 
-        <button
-          style={{
-            background: tab === e ? "white" : "#f1f1f1",
-            overflow: "hidden",
-          }}
-          onClick={() => setTab(e)}
-          className="searchTab"
-        >
-          {name[e]}
+        {tabs.map((e) => (
+          <>
+            <button
+              id={`tab${e}`}
+              style={{
+                color: titles[e] === "New Tab" ? "grey" : "black",
+                background: focus === e ? "white" : "#e5e5e5",
+                overflow: "hidden",
+              }}
+              onClick={() => setFocus(e)}
+              className="searchTab"
+            >
+              <span>{titles[e]}</span>
+            </button>
+            {focus === e && (
+              <button
+                className="removeButton"
+                onClick={() => {
+                setFocus(tabs[tabs.indexOf(e) - 1]);
+                removeTab(e);
+                }}
+              >
+                &#x2716;
+              </button>
+            )}{" "}
+          </>
+        ))}
+        <button className="addButton" onClick={() => addTab()}>
+          &#x2b;
         </button>
-        )}
       </div>
-
-    <div style={{zIndex:'10', height:'4px', background:'white', position:'sticky', top:'179px'}}/>
-          <br/>
-      <div style={{ position: "relative", top: "0px", background: "white" }}>
-        {array.map(e => 
-        <SearchBar
-          recent={cacheData['search']}
-          cacheData={cacheData[`tab${e}`]}
-          setTitle={(input) => handleChange(input, e)}
-          key={e}
-          index={e}
-          display={tab === e ? "block" : "none"}
-        />
-        )}
+      <div
+        style={{
+          zIndex: "10",
+          height: "4px",
+          background: "white",
+          position: "sticky",
+          top: "52px",
+        }}
+      />
+      <div style={{ position: "relative", top: "0px", background: "white"}}>
+        {tabs.map((e) => (
+          <SearchBar
+            recent={cacheData["search"]}
+            cacheData={cacheData[`tab${e}`]}
+            setTitle={(input) => handleTitles(e, input)}
+            key={e}
+            index={e}
+            display={focus === e ? "block" : "none"}
+          />
+        ))}
       </div>
     </>
   );

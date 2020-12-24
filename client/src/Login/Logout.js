@@ -1,14 +1,15 @@
 import { GoogleLogout } from 'react-google-login';
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
-  import { Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { TYPE } from './'
 
 export default function GoogleButton() {
   const { userLogout, user } = useContext(UserContext);
 
 return (
 <>
-{ user.type === 'google' ?
+{ user.type === TYPE.GOOGLE ?
   <GoogleLogout className="signGoogle"
 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 buttonText="Logout"

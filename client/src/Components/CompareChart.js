@@ -61,18 +61,17 @@ function CompareChart({ price, range, index}) {
           Your product is cheaper than <b>{percentage.toFixed(2)}%</b> of the
           scanned listings:
         </u>
+        <br/><br/>
       </p>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <p style={{ width: "6%", marginTop: "30px" }}>
-          Price difference between ebay's offers to yours
-        </p>
+      <div style={{justifyContent: "center" }}>
+
         <AreaChart
-          width={800}
+          width={850}
           height={200}
           data={data}
           margin={{
             top: 10,
-            right: 30,
+            right: 50,
             left: 0,
             bottom: 0,
           }}
@@ -94,6 +93,9 @@ function CompareChart({ price, range, index}) {
           />
         </AreaChart>
       </div>
+           <i>
+          (The y axis represents the difference between the prices offered by ebay's sellers to yours)
+        </i>
       <br/><br/>
     </>
   );

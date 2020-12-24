@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import './LoginSystem.css'
 import { Link } from "react-router-dom";
-import { GoogleLogin } from './'
+import { GoogleLogin, TYPE } from './'
 import { useContext } from "react";
 import { UserContext } from "../Providers/UserProvider";
 import logo from './logo.png';
@@ -24,7 +24,7 @@ export default function Login(props) {
 
 const handleLogin = (event) => {
 event.preventDefault();
-userLogin({type:'normal', email, password})
+userLogin({type:TYPE.NORMAL, email, password})
 }
 
     return (

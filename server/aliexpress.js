@@ -157,7 +157,7 @@ async function aliExpressScraper(product, country, room) {
           'div[class="table-tr"]',
           (elements) => {
             function toDays(e) {
-              if (!e.includes("-")) {
+              if (!e.includes("-") && !e.includes("/")) {
                 const months = [
                   "Jan",
                   "Feb",
@@ -185,8 +185,10 @@ async function aliExpressScraper(product, country, room) {
                     Date.now()) /
                     (1000 * 60 * 60 * 24)
                 );
-              } else {
+              } else if (e.includes("-")) {
                 return e.replace(/[^0-9\-]/g, "").split("-");
+              } else {
+                return e.replace(/[^0-9\/]/g, "").split("/");
               }
             }
             return elements

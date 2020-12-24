@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import GoogleLogin from "./GoogleLogin";
+import { GoogleLogin, TYPE} from "./";
 import logo from "./logo.png";
 import { UserContext } from "../Providers/UserProvider";
 
@@ -23,7 +23,7 @@ export default function Signup(props) {
 
 const handleSignup = (event) => {
 event.preventDefault();
-userSignup({type:'normal', email, password, name:displayName})
+userSignup({type:TYPE.NORMAL, email, password, name:displayName})
 }
 
   return (

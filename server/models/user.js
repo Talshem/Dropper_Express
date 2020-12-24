@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const { generateToken } = require("../middlewares/checkToken");
+const { generateToken, TYPE } = require("../middlewares/checkToken");
 
 mongoose.set("useFindAndModify", false);
 
@@ -35,7 +35,7 @@ const User = mongoose.model("User", UserSchema);
 
 const createUser = async (user) => {
   const { email, name, type, password } = user;
-  if (type === "normal" && await findUserByEmail(user)) return null;
+  if (type === TYPE.NORMAL && await findUserByEmail(user)) return null;
   const newUser = new User({
     email,
     name,
@@ -51,7 +51,7 @@ const createUser = async (user) => {
 const findUserOrCreate = async (user) => {
   const { email, type, password, name, token } = user;
   let result;
-  if (type === "google") {
+  if (type === TYPE.GOOGLE) {
     result = (await User.findOne({ email }))
       ? await User.findOne({ email })
       : await createUser(user);
@@ -63,12 +63,12 @@ const findUserOrCreate = async (user) => {
 
 const findUserByEmail = async (user) => {
   const { email } = user;
-  
+
   return await User.findOne({ email });
 };
 
 const findUserAndUpdateToken = async (user) => {
-  const { email, token } = user;
+  const { email } = user;
   return await User.findOneAndUpdate(
     { email },
     { token: generateToken(email) },
