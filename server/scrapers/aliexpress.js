@@ -43,7 +43,7 @@ async function aliExpressScraper(product, country, sendNotification) {
       args: [
         " --no-sandbox",
         "--disable-setuid-sandbox",
-        "--proxy-server=socks5://dropperexpress_torproxy_1:9050",
+        `--proxy-server=socks5://${process.env.TOR_PROXY}:9050`,
       ],
       headless: true,
     });

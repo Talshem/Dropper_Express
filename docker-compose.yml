@@ -2,6 +2,7 @@ version: "2.2"
 
 services:
   client:
+    container_name: client
     restart: on-failure
     build:
       context: "./client"
@@ -13,22 +14,28 @@ services:
       - server
 
   server:
+    container_name: server
     restart: on-failure
     build:
       context: "./server"
       dockerfile: Dockerfile
     links: 
-    environment: 
-     - REDIS_URL=redis://cache
+      - redis
+    environment:
+      - TOR_PROXY=torproxy
+      - REDIS_URL=redis://cache
     ports:
       - "8080:8080"
+    depends_on: 
+      - redis
   
   redis:
-  image: redis
-  container_name: cache
-  expose:
-    - 6379
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
 
   torproxy:
+    container_name: torproxy
     image: dperson/torproxy
 
