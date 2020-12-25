@@ -53,7 +53,7 @@ export default function EbayItem({
         style={{
           background:
             selectedEbayItem && selectedEbayItem.url === url
-              ? "rgb(141, 110, 110, 0.3)"
+              ? " rgba(192, 183, 183, 0.5)"
               : "rgb(245, 244, 239)",
         }}
       >

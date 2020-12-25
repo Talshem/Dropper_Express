@@ -1,16 +1,19 @@
 const puppeteer = require("puppeteer");
 
-async function ebayScraper(product, country, room) {
+async function ebayScraper(product, country, sendNotification) {
   const browser = await puppeteer.launch({
-    args: [" --no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      " --no-sandbox",
+      "--disable-setuid-sandbox",
+      "--proxy-server=socks5://dropperexpress_torproxy_1:9050",
+    ],
     headless: true,
   });
-  
-  sendNotification(room, "Scanning Ebay...");
+
+  sendNotification("Scanning Ebay...");
 
   const page = await browser.newPage();
   try {
-
     await page.setViewport({ width: 0, height: 0 });
 
     await page.goto(`https://www.ebay.com/sch/i.html?_nkw=${product}`);
@@ -23,7 +26,7 @@ async function ebayScraper(product, country, room) {
       visible: true,
     });
 
-    sendNotification(room, "Sets Destination Country");
+    sendNotification("Sets Destination Country");
     await page.$eval('button[title="Ship to"]', (element) => element.click());
     await page.waitForSelector('div[class="shipto__country-list"]', {
       visible: true,
@@ -146,7 +149,7 @@ async function ebayScraper(product, country, room) {
     };
     links = links.slice(0, 20);
     let items = [];
-    sendNotification(room, "Scanning Links");
+    sendNotification("Scanning Links");
     for (let i = 0; i <= links.length && i <= links.length + 10; i += 10) {
       items = items.concat(
         await Promise.allSettled(
@@ -154,11 +157,11 @@ async function ebayScraper(product, country, room) {
         )
       );
     }
-    sendNotification(room, "Finished Scraping Ebay");
+    sendNotification("Finished Scanning Ebay");
     await browser.close();
     return items.filter((e) => e.value !== null).map((e) => e.value);
   } catch (err) {
-    sendNotification(room, 'Error Occured')
+    sendNotification("Error Occured");
     return null;
   }
 }
@@ -170,7 +173,4 @@ function timeOut(time) {
   });
 }
 
-module.exports = ebayScraper
-const { sendNotification } = require('./app');
-
-
+module.exports = ebayScraper;

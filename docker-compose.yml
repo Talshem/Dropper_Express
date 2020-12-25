@@ -11,21 +11,23 @@ services:
     stdin_open: true
     depends_on:
       - server
-    # volumes:
-    #   - .:/usr/src/app/client
-    #   - /usr/src/app/client/node_modules
 
   server:
     restart: on-failure
     build:
       context: "./server"
       dockerfile: Dockerfile
+    links: 
+    environment: 
+     - REDIS_URL=redis://cache
     ports:
       - "8080:8080"
-    # volumes:
-    #   - .:/usr/src/app/server
-    #   - /usr/src/app/server/node_modules
   
+  redis:
+  image: redis
+  container_name: cache
+  expose:
+    - 6379
 
   torproxy:
     image: dperson/torproxy

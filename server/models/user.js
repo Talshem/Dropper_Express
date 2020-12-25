@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const { generateToken, TYPE } = require("../middlewares/checkToken");
 
-mongoose.set("useFindAndModify", false);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 const url = process.env.MONGODB_URI;
 
@@ -35,7 +37,7 @@ const User = mongoose.model("User", UserSchema);
 
 const createUser = async (user) => {
   const { email, name, type, password } = user;
-  if (type === TYPE.NORMAL && await findUserByEmail(user)) return null;
+  if (type === TYPE.NORMAL && (await findUserByEmail(user))) return null;
   const newUser = new User({
     email,
     name,
@@ -49,21 +51,22 @@ const createUser = async (user) => {
 };
 
 const findUserOrCreate = async (user) => {
-  const { email, type, password, name, token } = user;
-  let result;
+  const { email, type, password, name } = user;
+  let userExist = await User.findOne({ email, type });
   if (type === TYPE.GOOGLE) {
-    result = (await User.findOne({ email }))
-      ? await User.findOne({ email })
-      : await createUser(user);
-  } else {
-    result = await User.findOne({ email });
+    if (userExist) {
+      return userExist;
+    } else if (await User.findOne({ email })) {
+      return null;
+    } else {
+      return await createUser(user);
+    }
   }
-  return result;
+  return userExist;
 };
 
 const findUserByEmail = async (user) => {
   const { email } = user;
-
   return await User.findOne({ email });
 };
 
@@ -78,13 +81,8 @@ const findUserAndUpdateToken = async (user) => {
 
 const updateUserPassword = async (user) => {
   const { email, password } = user;
-  return await User.updateOne(
-    { email },
-    { password },
-    { new: true }
-  );
+  return await User.findOneAndUpdate({ email }, { password }, { new: true });
 };
-
 
 module.exports = {
   User,
@@ -92,5 +90,5 @@ module.exports = {
   findUserOrCreate,
   findUserByEmail,
   findUserAndUpdateToken,
-  updateUserPassword
+  updateUserPassword,
 };

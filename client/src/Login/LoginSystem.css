@@ -35,6 +35,14 @@ border-radius: 5px;
     background: rgb(177, 226, 177);
     border:none
     }
+
+    .signNormal:hover{
+      color:rgb(80, 80, 80)
+    }
+
+        .signNormal:active{
+      background:rgb(154, 212, 154)
+    }
     
     .signGoogle{
       width: 90%;

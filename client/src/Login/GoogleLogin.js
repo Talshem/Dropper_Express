@@ -10,7 +10,7 @@ return (
   <GoogleLogin className="signGoogle"
 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 buttonText="Sign In With Google"
-onSuccess={(response) => userLogin({type:TYPE.GOOGLE, email:response.xt.du, name:response.xt.Ad, token: response.tokenId})}
+onSuccess={(response) => userLogin({type:TYPE.GOOGLE, email:response.xt.du, name:response.xt.Ad})}
 onFailure={(response) => console.log(response)}
 cookiePolicy={'single_host_origin'}
 />

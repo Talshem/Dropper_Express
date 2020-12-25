@@ -39,13 +39,17 @@ export default function Tabsbar(props) {
     const fetchData = async () => {
       try {
         const { data } = await network.get(`/history/${user.email}`);
-        if (data) setCacheData(data);
         let flag = false;
-        for (let i = 1; i < 5; i++) {
-          if (data[`tab${i}`] && !tabs.includes(i)) addTab(i);
-          flag = true;
+        if (data) {
+          setCacheData(data);
+          for (let i = 1; i < 5; i++) {
+            if (data[`tab${i}`] && !tabs.includes(i)) {
+              addTab(i);
+              flag = true;
+            }
+          }
         }
-      if (!flag) addTab()
+        if (!flag) addTab();
       } catch (err) {
         return;
       }
@@ -88,8 +92,10 @@ export default function Tabsbar(props) {
 
   return (
     <>
-    
-      <div id="searchBar" style={{ top: "950px", position: "absolute", width:'0' }} />
+      <div
+        id="searchBar"
+        style={{ top: "932px", position: "absolute", width: "0" }}
+      />
       <div className="tabsBar">
         {tabs.map((e) => (
           <>
@@ -105,17 +111,15 @@ export default function Tabsbar(props) {
             >
               <span>{titles[e]}</span>
             </button>
-            {focus === e && (
-              <button
-                className="removeButton"
-                onClick={() => {
-                setFocus(tabs[tabs.indexOf(e) - 1]);
+            <button
+              className="removeButton"
+              onClick={() => {
+                focus === e && setFocus(tabs[tabs.indexOf(e) - 1]);
                 removeTab(e);
-                }}
-              >
-                &#x2716;
-              </button>
-            )}{" "}
+              }}
+            >
+              &#x2716;
+            </button>{" "}
           </>
         ))}
         <button className="addButton" onClick={() => addTab()}>
@@ -131,7 +135,7 @@ export default function Tabsbar(props) {
           top: "52px",
         }}
       />
-      <div style={{ position: "relative", top: "0px", background: "white"}}>
+      <div style={{ position: "relative", top: "0px", background: "white" }}>
         {tabs.map((e) => (
           <SearchBar
             recent={cacheData["search"]}

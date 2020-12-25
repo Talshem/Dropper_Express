@@ -18,6 +18,7 @@ export default function AliexpressItem({
   const { handleSelect, selectedAliexpressItem } = useContext(ItemContext);
   const details = useRef();
 
+
   useEffect(() => {
     if (!selectedAliexpressItem && index === 0)
       handleSelect(
@@ -90,7 +91,7 @@ export default function AliexpressItem({
       style={{
         background:
           selectedAliexpressItem && selectedAliexpressItem.url === url
-            ? "rgb(141, 110, 110, 0.3)"
+            ? "rgba(192, 183, 183, 0.5)"
             : "rgb(245, 244, 239)",
       }}
     >
@@ -103,14 +104,14 @@ export default function AliexpressItem({
           Sold: <b>{sold}</b> | Price: <b>{price}$</b> | Rating:{" "}
           <b>{rating ? rating : "none"}</b> | Reviews: <b>{reviews}</b> |
           Delivery:{" "}
-          {isNaN(shipping[shippingMethod].days) ? (
+          {isNaN(sortTable(shipping)[shippingMethod].days) ? (
             <span>
-              <b>{Number(shipping[shippingMethod].days[0])}</b> to{" "}
-              <b>{Number(shipping[shippingMethod].days[1])}</b> days
+              <b>{Number(sortTable(shipping)[shippingMethod].days[0])}</b> to{" "}
+              <b>{Number(sortTable(shipping)[shippingMethod].days[1])}</b> days
             </span>
           ) : (
             <span>
-              <b>{Number(shipping[shippingMethod].days)}</b> days
+              <b>{Number(sortTable(shipping)[shippingMethod].days)}</b> days
             </span>
           )}
         </span>
@@ -123,10 +124,10 @@ export default function AliexpressItem({
           onMouseLeave={() => (details.current.open = false)}
         >
           <summary>
-            Shipping: {shipping[shippingMethod].carrier},{" "}
+            Shipping: {sortTable(shipping)[shippingMethod].carrier},{" "}
             <b>
-              {shipping[shippingMethod].price
-                ? shipping[shippingMethod].price + "$"
+              {sortTable(shipping)[shippingMethod].price
+                ? sortTable(shipping)[shippingMethod].price + "$"
                 : "Free"}
             </b>
           </summary>
@@ -168,7 +169,7 @@ export default function AliexpressItem({
         </details>
         <b style={{ fontSize: "20px" }}>
           {" "}
-          Total: {(price + shipping[shippingMethod].price).toFixed(2)}$
+          Total: {(price + sortTable(shipping)[shippingMethod].price).toFixed(2)}$
         </b>
       </div>
     </div>

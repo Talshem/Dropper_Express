@@ -96,8 +96,6 @@ export default function EbaySection({ ebay }) {
               <MenuItem value="sold">Sold</MenuItem>
               <MenuItem value="price">Price</MenuItem>
               <MenuItem value="delivery">Delivery</MenuItem>
-              <MenuItem value="rating">Rating</MenuItem>
-              <MenuItem value="reviews">Reviews</MenuItem>
             </Select>
           </FormControl>
           <br />

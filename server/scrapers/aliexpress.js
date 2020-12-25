@@ -36,15 +36,19 @@ const proxies = [
   "eu15",
 ];
 
-async function aliExpressScraper(product, country, room) {
+async function aliExpressScraper(product, country, sendNotification) {
   try {
     // launches tor browser
     const browser = await puppeteer.launch({
-      args: [" --no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        " --no-sandbox",
+        "--disable-setuid-sandbox",
+        "--proxy-server=socks5://dropperexpress_torproxy_1:9050",
+      ],
       headless: true,
     });
 
-    sendNotification(room, "Scanning Aliexpress...");
+    sendNotification("Scanning Aliexpress...");
     const page = await browser.newPage();
 
     await page.setViewport({ width: 0, height: 0 });
@@ -62,8 +66,8 @@ async function aliExpressScraper(product, country, room) {
       `https://www.aliexpress.com/wholesale?SearchText=${product}&SortType=total_tranpro_desc&shipFromCountry=CN`
     );
     await page.$eval('button[type="submit"]', (element) => element.click());
-   
-    sendNotification(room, "Sets Destination Country");
+
+    sendNotification("Sets Destination Country");
 
     await timeOut(10000);
     await page.evaluate(() => window.stop());
@@ -75,7 +79,7 @@ async function aliExpressScraper(product, country, room) {
       title === "Sorry, we have detected unusual traffic from your network."
     ) {
       console.log(title);
-      sendNotification(room, 'Error Occured')
+      sendNotification("Error Occured");
       return [];
     }
 
@@ -102,11 +106,10 @@ async function aliExpressScraper(product, country, room) {
             element[1].click()
           );
 
-          const image = await page.$eval(
+        const image = await page.$eval(
           'img[class="magnifier-image"]',
           (element) => element.getAttribute("src")
         );
-
 
         await page.$$eval('ul[class="sku-property-list"]', (elements) =>
           elements.map(
@@ -230,7 +233,7 @@ async function aliExpressScraper(product, country, room) {
 
     links = links.slice(0, 20);
     let items = [];
-    sendNotification(room, "Scanning Links");
+    sendNotification("Scanning Links");
 
     for (let i = 0; i <= links.length && i <= links.length + 10; i += 10) {
       items = items.concat(
@@ -240,12 +243,12 @@ async function aliExpressScraper(product, country, room) {
       );
     }
 
-    sendNotification(room, "Finished Scraping Aliexpress");
+    sendNotification("Finished Scanning Aliexpress");
     await browser.close();
 
     return items.filter((e) => e.value !== null).map((e) => e.value);
   } catch (err) {
-    sendNotification(room, 'Error Occured')
+    sendNotification("Error Occured");
     return null;
   }
 }
@@ -260,4 +263,3 @@ function timeOut(time) {
 // aliExpressScraper("Levitating Plant Pot", "United States");
 
 module.exports = aliExpressScraper;
-const { sendNotification } = require('./app');
