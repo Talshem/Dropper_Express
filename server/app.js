@@ -18,6 +18,8 @@ const server = http.createServer(app);
 const socketIo = require("socket.io");
 const io = socketIo(server);
 
+app.use(express.static(__dirname + '/build'));
+
 // -----------------------------------------------------------------------------------------
 
 io.sockets.on("connection", (socket) => {
@@ -119,6 +121,7 @@ app.delete("/clearCache/:key", async (req, res) => {
     return res.status(400).send("Failure");
   }
 });
+
 
 app.use(unknownEndpoint);
 

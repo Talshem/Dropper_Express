@@ -15,6 +15,8 @@ export const UserProvider = (props) => {
       const { data } = await network.get("/auto");
       if (data) setUserState(data);
       setResponse(true);
+      setLoginError(null)
+      setSignupError(null)
     };
     fetchData();
   }, []);

@@ -1,23 +1,11 @@
-version: "2.2"
+version: "2"
 
 services:
-  client:
-    container_name: client
+  app:
+    container_name: app
     restart: on-failure
     build:
-      context: "./client"
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    stdin_open: true
-    depends_on:
-      - server
-
-  server:
-    container_name: server
-    restart: on-failure
-    build:
-      context: "./server"
+      context: "./"
       dockerfile: Dockerfile
     links: 
       - redis
@@ -28,7 +16,8 @@ services:
       - "8080:8080"
     depends_on: 
       - redis
-  
+      - torproxy
+
   redis:
     image: redis
     container_name: cache
@@ -39,3 +28,13 @@ services:
     container_name: torproxy
     image: dperson/torproxy
 
+  ngrok:
+    container_name: ngrok
+    image: shkoliar/ngrok:latest
+    ports:
+      - 4551:4551
+    links:
+      - app
+    environment:
+      - DOMAIN=app
+      - PORT=8080

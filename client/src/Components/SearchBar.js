@@ -38,7 +38,6 @@ export default function SearchBar({ display, setTitle, index, cacheData, recent 
             <button
         onClick={() => {
           if (input.trim() !== "") {
-            setTitle(input);
             setSearch(input);
             setToggle((e) => e + 1);
           }
@@ -53,6 +52,7 @@ export default function SearchBar({ display, setTitle, index, cacheData, recent 
           index={index}
           toggle={toggle}
           search={search}
+          setTitle={(e) => setTitle(e)}
           setSearch={(e) => setSearch(e)}
         />
       </ErrorBoundary>

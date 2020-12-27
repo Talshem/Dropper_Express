@@ -13,6 +13,7 @@ function generateToken(email) {
 }
 
 function verifyToken(token) {
+  if (!token) return false
   token = token.slice(7, token.length);
   return jwt.verify(token, REFRESH_TOKEN_SECRET, (error, decoded) => {
     if (error) return false;

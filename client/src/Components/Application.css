@@ -13,7 +13,8 @@ z-index: 5;
 
 
 .footer{
-    margin-top: 100px;
+z-index: 6;
+position: relative;
 width: 100%;
 height:400px;
 background-color: rgb(245, 244, 239);
@@ -83,6 +84,7 @@ position: absolute;
 .refButton{
 position: absolute;;
 width: 20%;
+overflow: hidden;
 height: 100px;
 margin-top:70px;
 border-radius: 2px;
@@ -94,9 +96,6 @@ box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.75);
 text-shadow: 1px 1px 3px rgb(0, 0, 0, 0.5);
 border: 3.5px solid white;
 transition: 0.2s;
-animation-name:loading;
-animation-duration: 2s;
-animation-iteration-count: 1;
 }
 
 .refButton:hover{
@@ -112,15 +111,7 @@ border-radius: 2px;
 text-align: center;
 box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.5);
 border: 3.5px solid white;
-animation-name:loading;
-animation-duration: 2s;
-animation-iteration-count: 1;
-}
 
-@keyframes loading {
-    0% {opacity: 0;}
-    50% {opacity: 0;}
-    100% {opacity: 1;}
 }
 
 .loadingText{
@@ -131,12 +122,6 @@ margin-bottom: 50;
 animation-duration: 2s;
 animation-name: fading;
 animation-iteration-count: infinite;
-}
-
-@keyframes fading {
-  0%   {opacity: 0.25;}
-  50%  {opacity: 0.75;}
-  100% {opacity: 0.25;}
 }
 
 .recentButton {

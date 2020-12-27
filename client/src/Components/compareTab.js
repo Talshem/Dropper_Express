@@ -10,7 +10,7 @@ import { UserContext } from "../Providers/UserProvider";
 import socketIOClient from "socket.io-client";
 import network from "../Helpers/Network";
 
-function CompareTab({ search, setSearch, toggle, index, cacheData }) {
+function CompareTab({ search, setSearch, toggle, index, cacheData, setTitle }) {
   const [ebay, setEbay] = useState(null);
   const [aliexpress, setAliexpress] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,6 +29,7 @@ function CompareTab({ search, setSearch, toggle, index, cacheData }) {
         setLoading(data);
       });
       try {
+        setTitle(search)
         setLoading("Scanning product");
         const { data } = await network.get(
           `/scrape?product=${search}&email=${user.email}&index=${index}`

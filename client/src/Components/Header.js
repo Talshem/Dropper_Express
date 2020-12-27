@@ -29,8 +29,9 @@ export default function Header(props) {
     return () => clearInterval(interval);
   }, [index]);
 
-const subBanner = (margin) => ( 
-<>
+const subBanner = (margin, serial) => ( 
+<Fade timeout={1500} in={(index+serial) % 2 !== 0}>
+  <div>
         <div
         style={{
         marginLeft: `${margin}%`
@@ -54,7 +55,8 @@ const subBanner = (margin) => (
         opacity:'0.5',
         }}/>
         </div>
-        </>
+        </div>
+        </Fade>
 )
 
   return (
@@ -90,8 +92,9 @@ const subBanner = (margin) => (
           width: "100vw",
         }}
       >
-{subBanner(5)}
-{subBanner(75.5)}
+{subBanner(5, 1)}
+
+{subBanner(75.5, 2)}
 
         {images.map((e, i) => (
           <Fade timeout={1500} in={index === i} key={i}>

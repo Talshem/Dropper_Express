@@ -30,7 +30,7 @@ export default function Tabsbar(props) {
     4: "New Tab",
     5: "New Tab",
   });
-  const [tabs, dispatch] = useReducer(reducer, []);
+  const [tabs, dispatch] = useReducer(reducer, [1]);
   const [cacheData, setCacheData] = useState({});
   const { user } = useContext(UserContext);
   const [toggle, setToggle] = useState(0);
@@ -39,23 +39,22 @@ export default function Tabsbar(props) {
     const fetchData = async () => {
       try {
         const { data } = await network.get(`/history/${user.email}`);
-        let flag = false;
         if (data) {
           setCacheData(data);
           for (let i = 1; i < 5; i++) {
             if (data[`tab${i}`] && !tabs.includes(i)) {
               addTab(i);
-              flag = true;
             }
           }
         }
-        if (!flag) addTab();
       } catch (err) {
         return;
       }
     };
     fetchData();
   }, [toggle]);
+
+
 
   const handleTitles = (index, content) => {
     setTitles((prevState) => ({
@@ -135,7 +134,7 @@ export default function Tabsbar(props) {
           top: "52px",
         }}
       />
-      <div style={{ position: "relative", top: "0px", background: "white" }}>
+      <div style={{ position: "relative", top: "0px", background: "white", marginBottom:'300px' }}>
         {tabs.map((e) => (
           <SearchBar
             recent={cacheData["search"]}
